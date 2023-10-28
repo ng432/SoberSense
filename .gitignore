@@ -1,6 +1,8 @@
 
-# Ignoring data collected
+# Ignoring collected data
 *data/
+
+.DS_Store
 
 # Xcode
 #

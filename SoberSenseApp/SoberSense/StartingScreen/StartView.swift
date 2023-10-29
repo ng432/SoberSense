@@ -10,6 +10,7 @@ import SwiftUI
 struct StartView: View {
     
     @State private var isExplanationViewVisible = true
+    @State private var isShowingUnitTable = false
     
     @State private var selectedHour = 0
     @State private var selectedMinute = 0
@@ -37,37 +38,47 @@ struct StartView: View {
                 UnitsPicker(selectedValue: $unitsDrunk)
                     .padding(.horizontal, 80)
                 
-                AlcoholUnitTable()
-                    .padding()
                 
+                HStack {
+                    Text("Units of drinks")
+                    Image(systemName: "questionmark.circle.fill")
+                }
+                .foregroundColor(.blue)
+                .onTapGesture {
+                    withAnimation {
+                        isShowingUnitTable.toggle()
+                    }
+                }
+                            
+                if isShowingUnitTable {
+                    AlcoholUnitTable()
+                        .padding()
+                }
                 
-                GenderPicker(selectedGender: $selectedGender)
-                
+    
                 WeightPicker(weight: $weight, isWeightInputValid: $isWeightInputValid)
         
         
                 VStack {
-                    
                     TimePicker(selectedHour: $selectedHour, selectedMinute: $selectedMinute)
-                    
-                    Text("If you have drunk alcohol, please wait at least half an hour from your first drink to record data.")
-                                               .font(.system(size: 14)) // Adjust the size as needed
-                                               .foregroundColor(.gray)
-                                               .multilineTextAlignment(.center)
-                                               .frame(width: 300)
-                    
-                    
                 }
-            
+                
+                GenderPicker(selectedGender: $selectedGender)
                 
                 NavigationLink("Next", destination: AnimationView(gameAttempt: $gameAttempt))
-                    .padding(20)
+                    .padding(10)
                     .background(Color.blue)
                     .foregroundColor(.white)
                     .cornerRadius(10)
                     .disabled(!isWeightInputValid)
-    
                 
+                
+    
+                Text("If you have drunk alcohol, please wait at least half an hour from your first drink to record data.")
+                                           .font(.system(size: 14)) // Adjust the size as needed
+                                           .foregroundColor(.gray)
+                                           .multilineTextAlignment(.center)
+                                           .frame(width: 300)
             }
             
         }

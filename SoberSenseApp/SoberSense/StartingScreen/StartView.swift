@@ -41,66 +41,14 @@ struct StartView: View {
                     .padding()
                 
                 
-                // Recording sex
-                HStack {
-                    Picker("Select Gender", selection: $selectedGender) {
-                        Text("Male").tag("Male")
-                        Text("Female").tag("Female")
-                    }
-                    .pickerStyle(SegmentedPickerStyle())
-                }
-                .frame(width: 200)
-                .padding()
+                GenderPicker(selectedGender: $selectedGender)
                 
-                
-                // Recording weight
-                HStack(spacing: 2){
-                    Text("Approximate weight:")
-                    
-                    let weightValues = [0] + Array(30...150)
-                    
-                    Picker("Number", selection: $weight) {
-                        ForEach(weightValues, id: \.self) { number in
-                            Text("\(number) kg")
-                        }
-                    }
-                    .pickerStyle(DefaultPickerStyle())
-                    
-                }
-                Text(isWeightInputValid ? "" : "Please enter a valid weight")
-                    .foregroundColor(.red)
-                    .font(.system(size: 14))
-                
-    
+                WeightPicker(weight: $weight, isWeightInputValid: $isWeightInputValid)
+        
+        
                 VStack {
                     
-                    HStack {
-                        
-                        Text("Time since first drink:")
-                        
-                        VStack (spacing: 0){
-                            
-                            Picker("Number", selection: $selectedHour) {
-                                ForEach(0 ..< 11, id: \.self) { number in
-                                    Text("\(number) hours")
-                                }
-                            }
-                            .pickerStyle(DefaultPickerStyle())
-                            
-                            
-                            Picker("Number", selection: $selectedMinute) {
-                                ForEach(0 ..< 6, id: \.self) { number in
-                                    Text("\(number*10) minutes")
-                                }
-                            }
-                            .pickerStyle(DefaultPickerStyle())
-                            
-                            
-                            
-                        }
-                        
-                    }
-                   
+                    TimePicker(selectedHour: $selectedHour, selectedMinute: $selectedMinute)
                     
                     Text("If you have drunk alcohol, please wait at least half an hour from your first drink to record data.")
                                                .font(.system(size: 14)) // Adjust the size as needed

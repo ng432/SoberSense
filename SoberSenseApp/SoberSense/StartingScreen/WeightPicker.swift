@@ -10,6 +10,7 @@ import SwiftUI
 struct WeightPicker: View {
     @Binding var weight: Int
     @Binding var isWeightInputValid: Bool
+    @Binding var didTapNext: Bool
 
     var body: some View {
         VStack{
@@ -31,9 +32,11 @@ struct WeightPicker: View {
                 .pickerStyle(DefaultPickerStyle())
             }
             
-            Text(isWeightInputValid ? "" : "Please enter a valid weight")
-                .foregroundColor(.red)
-                .font(.system(size: 14))
+            if didTapNext && !isWeightInputValid {
+                Text("Please enter a valid weight")
+                    .foregroundColor(.red)
+                    .font(.system(size: 14))
+                    }
             
         }
         

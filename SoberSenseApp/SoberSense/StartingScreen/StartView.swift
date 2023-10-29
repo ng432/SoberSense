@@ -26,6 +26,13 @@ struct StartView: View {
     
     @State private var showDetails = false
     
+    @State private var didTapNext = false
+    
+    var shouldShowWaitText: Bool {
+            let totalMinutes = (selectedHour * 60) + selectedMinute
+            return didTapNext && totalMinutes < 30 && unitsDrunk > 0
+        }
+    
     var body: some View {
         NavigationView{
     
@@ -40,8 +47,6 @@ struct StartView: View {
                     .padding(.horizontal, 80)
                 
                 
-
-                
                 HStack {
                     Text("Units of drinks")
                     Image(systemName: "questionmark.circle.fill")
@@ -52,22 +57,25 @@ struct StartView: View {
                         isShowingUnitTable.toggle()
                     }
                 }
-                            
+                
                 if isShowingUnitTable {
                     AlcoholUnitTable()
                         .padding()
                 }
                 
 
-                WeightPicker(weight: $weight, isWeightInputValid: $isWeightInputValid)
+                WeightPicker(weight: $weight, isWeightInputValid: $isWeightInputValid, didTapNext: $didTapNext)
                     .frame(width: 350)
-        
+                    .padding()
+                
         
                 TimePicker(selectedHour: $selectedHour, selectedMinute: $selectedMinute)
                     .frame(width: 350)
+                    .padding()
                 
                 
                 GenderPicker(selectedGender: $selectedGender)
+                    .padding()
                 
                 NavigationLink("Next", destination: AnimationView(gameAttempt: $gameAttempt))
                     .padding(10)
@@ -75,15 +83,20 @@ struct StartView: View {
                     .foregroundColor(.white)
                     .cornerRadius(10)
                     .disabled(!isWeightInputValid)
+                    .onTapGesture {
+                        didTapNext = true
+                    }
                 
-                
-    
-                Text("If you have drunk alcohol, please wait at least half an hour from your first drink to record data.")
-                       .font(.system(size: 14)) // Adjust the size as needed
-                       .foregroundColor(.gray)
-                       .multilineTextAlignment(.center)
-                       .frame(width: 300)
-                       .padding()
+                if shouldShowWaitText {
+                    withAnimation{
+                        Text("If you have drunk alcohol, please wait at least half an hour from your first drink to record data.")
+                            .font(.system(size: 14))
+                            .foregroundColor(.gray)
+                            .multilineTextAlignment(.center)
+                            .frame(width: 300)
+                            .padding()
+                    }
+                }
                 
                 
             }

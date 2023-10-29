@@ -18,8 +18,6 @@ struct StartView: View {
     @State private var isWeightInputValid = false
     
     @State private var unitsDrunk: Double = 0.0
-    @State private var isUnitsInputValid = false
-    @FocusState private var isEditingUnits: Bool
     
     @State private var gameAttempt = TestTrack()
     
@@ -108,6 +106,7 @@ struct StartView: View {
                                                .font(.system(size: 14)) // Adjust the size as needed
                                                .foregroundColor(.gray)
                                                .multilineTextAlignment(.center)
+                                               .frame(width: 300)
                     
                     
                 }
@@ -118,6 +117,7 @@ struct StartView: View {
                     .background(Color.blue)
                     .foregroundColor(.white)
                     .cornerRadius(10)
+                    .disabled(!isWeightInputValid)
     
                 
             }

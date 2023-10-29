@@ -17,7 +17,7 @@ struct StartView: View {
     @State private var weight = 0
     @State private var isWeightInputValid = false
     
-    @State private var unitsDrunk: String = ""
+    @State private var unitsDrunk: Double = 0.0
     @State private var isUnitsInputValid = false
     @FocusState private var isEditingUnits: Bool
     
@@ -36,35 +36,8 @@ struct StartView: View {
                     .frame(maxWidth: 350)
                     .padding(8)
                 
-                HStack{
-                    
-                    Spacer(minLength: 50)
-                    
-                    VStack {
-                        TextField("Total units of alcohol drunk", text: $unitsDrunk)
-                            .keyboardType(.decimalPad)
-                            .focused($isEditingUnits)
-                            .background(
-                                Color.clear // Use a clear background for the TextField
-                            )
-                    }
-                    
-                    Spacer()
-                    
-                    Button("Submit") {
-                        isEditingUnits = false
-                    }
-                    .font(.system(size: 15))
-                    
-                    Spacer(minLength: 70)
-                    
-                    
-                }
-    
-                
-                Text(isUnitsInputValid ? "" : "Please enter a valid number")
-                    .foregroundColor(.red)
-                    .font(.system(size: 14))
+                UnitsPicker(selectedValue: $unitsDrunk)
+                    .padding(.horizontal, 80)
                 
                 AlcoholUnitTable()
                     .padding()
@@ -131,41 +104,29 @@ struct StartView: View {
                     }
                    
                     
-                    Text("If you have drunk alcohol, please wait at least \n half an hour from your first drink to record data. \n If you haven't drunk anything, leave as is.")
+                    Text("If you have drunk alcohol, please wait at least half an hour from your first drink to record data.")
                                                .font(.system(size: 14)) // Adjust the size as needed
                                                .foregroundColor(.gray)
                                                .multilineTextAlignment(.center)
                     
+                    
                 }
             
                 
-                
-                
                 NavigationLink("Next", destination: AnimationView(gameAttempt: $gameAttempt))
-                    .disabled(unitsDrunk.isEmpty || !isUnitsInputValid)
-                    .padding(10)
+                    .padding(20)
                     .background(Color.blue)
                     .foregroundColor(.white)
                     .cornerRadius(10)
-                    //.offset(x: 0, y: 20)
-                
+    
                 
             }
-        }
-        .onTapGesture {
-            self.isEditingUnits = false
             
         }
         .navigationBarBackButtonHidden(true)
 
         .onChange(of: unitsDrunk) { newInput in
-            
-            isUnitsInputValid = Float(newInput) != nil
-            
-            if Float(newInput) != nil {
                 gameAttempt.unitsDrunk = Float(newInput)
-                print("Units drunk saved")
-            }
         }
         
         .onChange(of: selectedGender) { newGender in

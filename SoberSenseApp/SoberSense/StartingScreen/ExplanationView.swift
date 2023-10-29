@@ -19,12 +19,12 @@ struct ExplanationView: View {
         .multilineTextAlignment(.center)
         .frame(maxWidth: 400)
         .font(.system(size: 16))
-                
-
+        
         Rectangle()
             .fill(Color.blue.opacity(0.5))
             .frame(height: 2)
-            .edgesIgnoringSafeArea(.top)
+            .frame(maxWidth: 350)
+            
     }
 }
 

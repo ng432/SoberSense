@@ -13,10 +13,15 @@ struct WeightPicker: View {
 
     var body: some View {
         VStack{
-            HStack(spacing: 2) {
+            HStack() {
                 Text("Approximate weight:")
+                    .frame(width: 150)
+                    .multilineTextAlignment(.center)
+    
                 
                 let weightValues = [0] + Array(30...150)
+                
+                Spacer()
                 
                 Picker("Number", selection: $weight) {
                     ForEach(weightValues, id: \.self) { number in

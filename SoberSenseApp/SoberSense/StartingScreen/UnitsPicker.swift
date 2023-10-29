@@ -12,8 +12,7 @@ struct UnitsPicker: View {
     @Binding var selectedValue: Double
     
     var body: some View {
-        VStack {
-            
+
             Stepper(
                 value: $selectedValue,
                 in: 0.0...30.0,
@@ -21,11 +20,11 @@ struct UnitsPicker: View {
             ) {
                 HStack {
                     Text("Units drunk:")
+                    Spacer()
                     Text("\(selectedValue, specifier: "%.1f")")
                         .foregroundColor(Color.blue) // Set the digits color to blue
                 }
             }
             
-        }
     }
 }

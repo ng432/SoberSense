@@ -35,9 +35,12 @@ struct StartView: View {
                     .frame(maxWidth: 350)
                     .padding(8)
                 
+                
                 UnitsPicker(selectedValue: $unitsDrunk)
                     .padding(.horizontal, 80)
                 
+                
+
                 
                 HStack {
                     Text("Units of drinks")
@@ -55,13 +58,14 @@ struct StartView: View {
                         .padding()
                 }
                 
-    
+
                 WeightPicker(weight: $weight, isWeightInputValid: $isWeightInputValid)
+                    .frame(width: 350)
         
         
-                VStack {
-                    TimePicker(selectedHour: $selectedHour, selectedMinute: $selectedMinute)
-                }
+                TimePicker(selectedHour: $selectedHour, selectedMinute: $selectedMinute)
+                    .frame(width: 350)
+                
                 
                 GenderPicker(selectedGender: $selectedGender)
                 
@@ -75,10 +79,13 @@ struct StartView: View {
                 
     
                 Text("If you have drunk alcohol, please wait at least half an hour from your first drink to record data.")
-                                           .font(.system(size: 14)) // Adjust the size as needed
-                                           .foregroundColor(.gray)
-                                           .multilineTextAlignment(.center)
-                                           .frame(width: 300)
+                       .font(.system(size: 14)) // Adjust the size as needed
+                       .foregroundColor(.gray)
+                       .multilineTextAlignment(.center)
+                       .frame(width: 300)
+                       .padding()
+                
+                
             }
             
         }

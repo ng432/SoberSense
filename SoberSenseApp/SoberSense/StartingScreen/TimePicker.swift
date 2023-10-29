@@ -13,24 +13,27 @@ struct TimePicker: View {
 
     var body: some View {
         HStack {
-            Text("Time since first drink:")
+            Text("Time since the first drink:")
+                .frame(maxWidth: 150)
+                .multilineTextAlignment(.center)
             
-            VStack(spacing: 0) {
-                Picker("Number", selection: $selectedHour) {
-                    ForEach(0 ..< 11, id: \.self) { number in
-                        Text("\(number) hours")
-                    }
+            Spacer()
+            
+            
+            Picker("Number", selection: $selectedHour) {
+                ForEach(0 ..< 11, id: \.self) { number in
+                    Text("\(number) hours")
                 }
-                .pickerStyle(DefaultPickerStyle())
-                
-                Picker("Number", selection: $selectedMinute) {
-                    ForEach(0 ..< 6, id: \.self) { number in
-                        Text("\(number * 10) minutes")
-                    }
-                }
-                .pickerStyle(DefaultPickerStyle())
             }
+            .pickerStyle(DefaultPickerStyle())
+         
+            Picker("Number", selection: $selectedMinute) {
+                ForEach(0 ..< 6, id: \.self) { number in
+                    Text("\(number * 10) minutes")
+                }
+            }
+            .pickerStyle(DefaultPickerStyle())
+        
         }
     }
 }
-

@@ -13,32 +13,34 @@ struct WeightPicker: View {
     @Binding var didTapNext: Bool
 
     var body: some View {
-        VStack{
-            HStack() {
-                Text("Approximate weight:")
-                    .frame(width: 150)
-                    .multilineTextAlignment(.center)
-    
-                
-                let weightValues = [0] + Array(30...150)
-                
-                Spacer()
-                
+        HStack() {
+            Text("Approximate weight")
+                .frame(width: 150)
+                .multilineTextAlignment(.center)
+            
+            
+            let weightValues = [0] + Array(30...150)
+            
+            Spacer()
+            
+            
+            VStack{
                 Picker("Number", selection: $weight) {
                     ForEach(weightValues, id: \.self) { number in
                         Text("\(number) kg")
                     }
                 }
                 .pickerStyle(DefaultPickerStyle())
+                
+                if didTapNext && !isWeightInputValid {
+                    Text("Invalid weight")
+                        .foregroundColor(.red)
+                        .font(.system(size: 14))
+                        }
             }
-            
-            if didTapNext && !isWeightInputValid {
-                Text("Please enter a valid weight")
-                    .foregroundColor(.red)
-                    .font(.system(size: 14))
-                    }
-            
+            Spacer()
         }
-        
+            
+            
     }
 }

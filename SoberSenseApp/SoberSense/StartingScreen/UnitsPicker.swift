@@ -8,10 +8,11 @@
 import SwiftUI
 
 struct UnitsPicker: View {
-    
     @Binding var selectedValue: Double
-    
+    @Binding var isShowingUnitTable: Bool
+
     var body: some View {
+        VStack {
 
             Stepper(
                 value: $selectedValue,
@@ -19,12 +20,29 @@ struct UnitsPicker: View {
                 step: 0.1
             ) {
                 HStack {
-                    Text("Units drunk:")
+                    Text("Units drunk")
                     Spacer()
                     Text("\(selectedValue, specifier: "%.1f")")
-                        .foregroundColor(Color.blue) // Set the digits color to blue
+                        .foregroundColor(Color.blue)
                 }
             }
             
+            HStack {
+                Text("Units of drinks")
+                Image(systemName: "questionmark.circle.fill")
+            }
+            .foregroundColor(.blue)
+            .onTapGesture {
+                withAnimation {
+                    isShowingUnitTable.toggle()
+                }
+            }
+            
+            if isShowingUnitTable {
+                AlcoholUnitTable()
+                    .padding()
+            }
+            
+        }
     }
 }

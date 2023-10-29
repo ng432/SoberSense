@@ -40,37 +40,21 @@ struct StartView: View {
                 
                 ExplanationView()
                     .frame(maxWidth: 350)
-                    .padding(8)
+                    .padding()
                 
                 
-                UnitsPicker(selectedValue: $unitsDrunk)
-                    .padding(.horizontal, 80)
-                
-                
-                HStack {
-                    Text("Units of drinks")
-                    Image(systemName: "questionmark.circle.fill")
-                }
-                .foregroundColor(.blue)
-                .onTapGesture {
-                    withAnimation {
-                        isShowingUnitTable.toggle()
-                    }
-                }
-                
-                if isShowingUnitTable {
-                    AlcoholUnitTable()
-                        .padding()
-                }
+                UnitsPicker(selectedValue: $unitsDrunk, isShowingUnitTable: $isShowingUnitTable)
+                    .frame(maxWidth: 240)
+                    .padding()
                 
 
                 WeightPicker(weight: $weight, isWeightInputValid: $isWeightInputValid, didTapNext: $didTapNext)
-                    .frame(width: 350)
+                    .frame(width: 300)
                     .padding()
                 
         
                 TimePicker(selectedHour: $selectedHour, selectedMinute: $selectedMinute)
-                    .frame(width: 350)
+                    .frame(width: 300)
                     .padding()
                 
                 
@@ -91,12 +75,18 @@ struct StartView: View {
                     withAnimation{
                         Text("If you have drunk alcohol, please wait at least half an hour from your first drink to record data.")
                             .font(.system(size: 14))
-                            .foregroundColor(.gray)
+                            .foregroundColor(.red)
                             .multilineTextAlignment(.center)
                             .frame(width: 300)
                             .padding()
                     }
                 }
+                
+                Text("Play the game to get an estimate of how drunk you are!")
+                    .multilineTextAlignment(.center)
+                    .frame(maxWidth: 250)
+                    .font(.system(size: 16))
+                    .padding()
                 
                 
             }

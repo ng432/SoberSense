@@ -11,9 +11,9 @@ import SwiftUI
 struct ExplanationView: View {
     var body: some View {
         Group{
-            Text("This app is designed to collect touch data during a task, in order to train a model which can detect the user's blood alcohol concentration (BAC).")
+            Text("This app is designed to collect touch data during a game, in order to train a model which can detect the user's blood alcohol concentration (BAC).")
             Text("Please enter your details, including an estimate of many units you have drunk, if any.")
-            Text("Once you've completed the task, you'll get an estimate of your BAC.")
+            
             
         }
         .multilineTextAlignment(.center)

@@ -15,6 +15,7 @@ struct InitialAnimationView: View {
 
     var body: some View {
         ZStack {
+            
             Rectangle()
                 .frame(width: lineThickness, height: screenSize.height)
                 .foregroundColor(Color.red)
@@ -26,20 +27,7 @@ struct InitialAnimationView: View {
             Circle()
                 .frame(width: circleAnimatedRadius, height: circleAnimatedRadius)
                 .foregroundColor(Color.blue)
-                
-
-            Text("Tap this box to start")
-                .multilineTextAlignment(.center)
-                .padding(6)
-                .background(Color.red)
-                .foregroundColor(.white)
-                .cornerRadius(10)
-                .frame(maxWidth: 100)
-                .offset(x: 0, y: 90)
-                .onTapGesture {
-                    animationHasStarted = true
-                }
-
+               
             Text("Hold your phone with your non-dominant hand.")
                 .multilineTextAlignment(.center)
                 .padding(5)
@@ -58,6 +46,27 @@ struct InitialAnimationView: View {
                 .cornerRadius(10)
                 .frame(maxWidth: 250)
                 .offset(x: 0, y: -90)
+            
+            Text("Once the circle starts moving, don't take your finger off the screen.")
+                .multilineTextAlignment(.center)
+                .padding(6)
+                .background(Color.blue)
+                .foregroundColor(.white)
+                .cornerRadius(10)
+                .frame(maxWidth: 250)
+                .offset(x: 0, y: 90)
+            
+            Text("Tap this box to start.")
+                .multilineTextAlignment(.center)
+                .padding(6)
+                .background(Color.red)
+                .foregroundColor(.white)
+                .cornerRadius(10)
+                .frame(maxWidth: 120)
+                .offset(x: 0, y: 180)
+                .onTapGesture {
+                    animationHasStarted = true
+                }
         }
     }
     

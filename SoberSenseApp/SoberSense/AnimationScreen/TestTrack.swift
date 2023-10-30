@@ -45,7 +45,7 @@ struct TestTrack: Identifiable, Codable {
         
         self.id = UUID()
         // -1 to show any erroneous recording
-        self.unitsDrunk = -1
+        self.unitsDrunk = 0
         self.weight = 0
         // default as what picker starts on
         self.gender = "Male"

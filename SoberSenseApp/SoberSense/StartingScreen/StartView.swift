@@ -90,7 +90,7 @@ struct StartView: View {
                 
                 if shouldShowWaitText {
                     withAnimation{
-                        Text("If you have drunk alcohol, please wait at least half an hour from your first drink to record data.")
+                        Text("If you have drunk alcohol, please wait at least half an hour from your first drink.")
                             .font(.system(size: 14))
                             .foregroundColor(.red)
                             .multilineTextAlignment(.center)
@@ -133,7 +133,9 @@ struct StartView: View {
             }
         
         .onChange(of: selectedMinute) { newMinute in
-            gameAttempt.timeMinutes = newMinute
+            
+            // * 10 as newMinute is actually from 1:6
+            gameAttempt.timeMinutes = newMinute * 10
             }
         
         .onAppear {

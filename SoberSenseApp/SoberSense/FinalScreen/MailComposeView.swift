@@ -18,9 +18,9 @@ struct MailComposeView: UIViewControllerRepresentable {
 
     func makeUIViewController(context: Context) -> MFMailComposeViewController {
         let mailComposeViewController = MFMailComposeViewController()
-        mailComposeViewController.setToRecipients(["ng432@cam.ac.uk"])
-        
-        let subject = "Anonymous user ID: " + gameAttempt.id.uuidString
+        mailComposeViewController.setToRecipients(["sobersensedata@gmail.com"])
+    
+        let subject = gameAttempt.id.uuidString
         mailComposeViewController.setSubject(subject)
         
         mailComposeViewController.setMessageBody("This email contains touch data required to train a model.", isHTML: false)

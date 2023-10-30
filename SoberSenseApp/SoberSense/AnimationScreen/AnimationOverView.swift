@@ -68,33 +68,15 @@ struct AnimationOverView: View {
                     // Running through animation path
                     if currentIndex < coordinates.count && animationHasStarted {
                         
-                        if let touchPoint = touchPoint {
-                                Circle()
-                                    .frame(width: 60, height: 60)
-                                    .foregroundColor(Color.red)
-                                    .opacity(0.5)
-                                    .position(touchPoint)
-                        }
-                        
-                        // Vertical Line
-                        Rectangle()
-                            .frame(width: lineThickness, height: screenSize.height)
-                            .foregroundColor(Color.red)
-                            .offset(x: CGFloat(coordinates[currentIndex].xDimScale) * screenSize.width, y: 0)
-                            
-                        // Horizontal Line
-                       Rectangle()
-                           .frame(width: screenSize.width, height: lineThickness)
-                           .foregroundColor(Color.red)
-                           .offset(x: 0, y: CGFloat(coordinates[currentIndex].yDimScale) * screenSize.height)
-                                
-                        Circle()
-                            .frame(width: circleAnimatedRadius, height: circleAnimatedRadius)
-                            .foregroundColor(Color.blue)
-                            .offset(
-                                x: CGFloat(coordinates[currentIndex].xDimScale) * screenSize.width,
-                                y: CGFloat(coordinates[currentIndex].yDimScale) * screenSize.height)
-                        
+                        AnimatingCircleView(
+                                    touchPoint: touchPoint,
+                                    lineThickness: lineThickness,
+                                    screenSize: screenSize,
+                                    currentIndex: currentIndex,
+                                    coordinates: coordinates,
+                                    circleAnimatedRadius: circleAnimatedRadius
+                                )
+                       
                         RecordingTouchView(touchData: $touchData)
                         
                         

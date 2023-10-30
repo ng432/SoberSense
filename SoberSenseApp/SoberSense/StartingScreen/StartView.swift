@@ -78,7 +78,7 @@ struct StartView: View {
                 GenderPicker(selectedGender: $selectedGender)
                     .padding()
                 
-                NavigationLink("Next", destination: AnimationView(gameAttempt: $gameAttempt))
+                NavigationLink("Next", destination: AnimationOverView(gameAttempt: $gameAttempt))
                     .padding(10)
                     .background(Color.blue)
                     .foregroundColor(.white)

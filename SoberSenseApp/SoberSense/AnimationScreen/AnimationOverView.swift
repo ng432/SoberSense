@@ -9,7 +9,7 @@ import SwiftUI
 import Combine
 
 
-struct AnimationView: View {
+struct AnimationOverView: View {
     
     @Binding var gameAttempt: TestTrack
     
@@ -32,7 +32,6 @@ struct AnimationView: View {
     let screenSize = UIScreen.main.bounds.size
     let circleAnimatedRadius: CGFloat = 50
     let lineThickness: CGFloat = 2
-    let circleOnTouchRadius: CGFloat = 60
     
     // Variables to define coordinate path creation
     let duration: Int = 20
@@ -71,7 +70,7 @@ struct AnimationView: View {
                         
                         if let touchPoint = touchPoint {
                                 Circle()
-                                    .frame(width: circleOnTouchRadius, height: circleOnTouchRadius)
+                                    .frame(width: 60, height: 60)
                                     .foregroundColor(Color.red)
                                     .opacity(0.5)
                                     .position(touchPoint)
@@ -136,7 +135,7 @@ struct AnimationView: View {
                     withAnimation (.timingCurve(controlPoints[0], controlPoints[1], controlPoints[2], controlPoints[3], duration: animationDuration))
                         {
                             // Recording start time of movement to next coordinate
-                            //coordinates[currentIndex].animationStart = Double(CACurrentMediaTime())
+                            
                             if currentIndex < coordinates.count{
                                 
                                 var currentCoordinate = coordinates[currentIndex]
@@ -186,6 +185,6 @@ struct AnimationView_previews: PreviewProvider
 {
     static var previews: some View {
         let gameAttempt = Binding.constant(TestTrack())
-        return AnimationView(gameAttempt: gameAttempt)
+        return AnimationOverView(gameAttempt: gameAttempt)
     }
 }

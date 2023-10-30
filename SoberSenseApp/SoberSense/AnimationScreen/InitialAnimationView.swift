@@ -44,7 +44,7 @@ struct InitialAnimationView: View {
                 .background(Color.blue)
                 .foregroundColor(.white)
                 .cornerRadius(10)
-                .frame(maxWidth: 250)
+                .frame(maxWidth: 230)
                 .offset(x: 0, y: -90)
             
             Text("Once the circle starts moving, don't take your finger off the screen.")
@@ -53,7 +53,7 @@ struct InitialAnimationView: View {
                 .background(Color.blue)
                 .foregroundColor(.white)
                 .cornerRadius(10)
-                .frame(maxWidth: 250)
+                .frame(maxWidth: 220)
                 .offset(x: 0, y: 90)
             
             Text("Tap this box to start.")
@@ -74,7 +74,6 @@ struct InitialAnimationView: View {
 
 struct InitialAnimationView_previews: PreviewProvider
 {
-    
     static var previews: some View {
         @State var animationHasStarted = false
         let screenSize = UIScreen.main.bounds.size

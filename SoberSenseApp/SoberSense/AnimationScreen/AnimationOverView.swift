@@ -36,7 +36,7 @@ struct AnimationOverView: View {
     let lineThickness: CGFloat = 2
     
     // Variables to define coordinate path creation
-    let duration: Int = 5
+    let duration: Int = 20
     let jumpTotal: Int = 25
     let minDistance: Float = 0.1
     let extremeCoord: Float = 0.4
@@ -60,7 +60,6 @@ struct AnimationOverView: View {
         
         }
     
-
     var body: some View {
         
         NavigationStack{

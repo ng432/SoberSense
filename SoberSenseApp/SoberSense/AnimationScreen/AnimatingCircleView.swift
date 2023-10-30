@@ -17,14 +17,12 @@ struct AnimatingCircleView: View {
     var body: some View {
         ZStack {
 
-            
             // Vertical Line
             Rectangle()
                 .frame(width: lineThickness, height: screenSize.height)
                 .foregroundColor(Color.red)
                 .offset(x: CGFloat(coordinates[currentIndex].xDimScale) * screenSize.width, y: 0)
 
-            
             // Horizontal Line
             Rectangle()
                 .frame(width: screenSize.width, height: lineThickness)

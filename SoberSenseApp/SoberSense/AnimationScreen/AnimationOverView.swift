@@ -13,7 +13,7 @@ struct AnimationOverView: View {
     
     @Binding var gameAttempt: TestTrack
     
-    // To store animation data and time 
+    // To store animation data and timing
     @State private var pathRecord: [coordinateDimScale] = []
     
     // To store touchData during animation
@@ -28,13 +28,15 @@ struct AnimationOverView: View {
     @State private var gameIsOver = false
     
     @State private var animationHasStarted = false
+    
+    @State private var recordTouches = false
 
     let screenSize = UIScreen.main.bounds.size
     let circleAnimatedRadius: CGFloat = 50
     let lineThickness: CGFloat = 2
     
     // Variables to define coordinate path creation
-    let duration: Int = 20
+    let duration: Int = 5
     let jumpTotal: Int = 25
     let minDistance: Float = 0.1
     let extremeCoord: Float = 0.4
@@ -62,53 +64,67 @@ struct AnimationOverView: View {
     var body: some View {
         
         NavigationStack{
-                
-                ZStack{
+            
+            ZStack{
+            
+                // Initial start screen
+                if !animationHasStarted {
                     
-                    // Running through animation path
-                    if currentIndex < coordinates.count && animationHasStarted {
+                    InitialAnimationView(
+                        lineThickness: lineThickness,
+                        screenSize: screenSize,
+                        circleAnimatedRadius: circleAnimatedRadius,
+                        animationHasStarted: $animationHasStarted)
                         
-                        AnimatingCircleView(
-                                    touchPoint: touchPoint,
-                                    lineThickness: lineThickness,
-                                    screenSize: screenSize,
-                                    currentIndex: currentIndex,
-                                    coordinates: coordinates,
-                                    circleAnimatedRadius: circleAnimatedRadius
-                                )
-                       
-                        RecordingTouchView(touchData: $touchData)
-                        
-                        
-                    }
-                    else if !animationHasStarted {
-                        
-                        InitialAnimationView(lineThickness: lineThickness, screenSize: screenSize, circleAnimatedRadius: circleAnimatedRadius, animationHasStarted: $animationHasStarted)
-                            
-    
-                    }
-                    // Runs once the random path has finished
-                    else {
 
-                        // Navigates to GameOverView, saving touchData and randomPath
-                        NavigationLink(" ", destination: GameOverView(gameAttempt: $gameAttempt), isActive: $gameIsOver)
-                            .onAppear {
-                                gameIsOver = true
-                                
-                                // Saving relevant data for export
-                                gameAttempt.touchData = touchData
-                                gameAttempt.randomPath = pathRecord
-                                gameAttempt.controlPoints = controlPoints
-                                gameAttempt.animationDuration = animationDuration
-                                gameAttempt.duration = duration
-                                gameAttempt.jumpTotal = jumpTotal
-                                gameAttempt.minDistance = minDistance
-                                gameAttempt.extremeCoord = extremeCoord
-                                
-                            }
+                }
+                // Running through animation path
+                else if currentIndex < coordinates.count && animationHasStarted {
+
+                    AnimatingCircleView(
+                                lineThickness: lineThickness,
+                                screenSize: screenSize,
+                                currentIndex: currentIndex,
+                                coordinates: coordinates,
+                                circleAnimatedRadius: circleAnimatedRadius
+                            )
+                    
+                    if let touchPoint = touchPoint {
+                            Circle()
+                                .frame(width: 60, height: 60)
+                                .foregroundColor(Color.red)
+                                .opacity(0.5)
+                                .position(touchPoint)
                     }
+                    
+                    
+                    RecordingTouchView(touchData: $touchData)
                     
                 }
+                // Runs once the random path has finished
+                else {
+
+                    // Navigates to GameOverView, saving touchData and randomPath
+                    NavigationLink(" ", destination: GameOverView(gameAttempt: $gameAttempt), isActive: $gameIsOver)
+                        .onAppear {
+                            gameIsOver = true
+                            
+                            // Saving relevant data for export
+                            gameAttempt.touchData = touchData
+                            gameAttempt.randomPath = pathRecord
+                            gameAttempt.controlPoints = controlPoints
+                            gameAttempt.animationDuration = animationDuration
+                            gameAttempt.duration = duration
+                            gameAttempt.jumpTotal = jumpTotal
+                            gameAttempt.minDistance = minDistance
+                            gameAttempt.extremeCoord = extremeCoord
+                            
+                        }
+                }
+                
+                
+                
+            }
                 // Closure to run code on signal from timer
                 .onReceive(timer) { _ in
         
@@ -141,11 +157,10 @@ struct AnimationOverView: View {
                         touchPoint = nil
                     }
                 )
+
         
         }
         .navigationBarBackButtonHidden(true)
-        .padding(.horizontal, 5)
-        .padding(.vertical, 2)
         
         .onAppear {
                     
@@ -155,8 +170,12 @@ struct AnimationOverView: View {
             self.timer.upstream.connect().cancel()
             self.timer = Timer.publish(every: self.jumpFreq, on: .main, in: .common).autoconnect()
             
-        }
             
+        
+        }
+        
+        
+        
 
     }
         

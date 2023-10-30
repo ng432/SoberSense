@@ -16,12 +16,17 @@
 		015AB0762ABDD07000783BE9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 015AB0752ABDD07000783BE9 /* Assets.xcassets */; };
 		015AB0792ABDD07000783BE9 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 015AB0782ABDD07000783BE9 /* Preview Assets.xcassets */; };
 		015AB0802ABDD0B500783BE9 /* StartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 015AB07F2ABDD0B500783BE9 /* StartView.swift */; };
-		015AB0822ABDD0CE00783BE9 /* AnimationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 015AB0812ABDD0CE00783BE9 /* AnimationView.swift */; };
+		015AB0822ABDD0CE00783BE9 /* AnimationOverView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 015AB0812ABDD0CE00783BE9 /* AnimationOverView.swift */; };
 		015AB0842ABDD0FE00783BE9 /* TestTrack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 015AB0832ABDD0FE00783BE9 /* TestTrack.swift */; };
 		015AB0862ABDD12200783BE9 /* GameOverView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 015AB0852ABDD12200783BE9 /* GameOverView.swift */; };
 		015AB0882ABDD14200783BE9 /* GeneratePath.swift in Sources */ = {isa = PBXBuildFile; fileRef = 015AB0872ABDD14200783BE9 /* GeneratePath.swift */; };
 		015AB0922ACF300A00783BE9 /* RecordingTouchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 015AB0912ACF300A00783BE9 /* RecordingTouchView.swift */; };
 		015AB09A2ADD6D5400783BE9 /* MailComposeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 015AB0992ADD6D5400783BE9 /* MailComposeView.swift */; };
+		015E089A2AEE866E000DB9EB /* UnitsPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 015E08992AEE866E000DB9EB /* UnitsPicker.swift */; };
+		015E089F2AEE969B000DB9EB /* TimePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 015E089E2AEE969B000DB9EB /* TimePicker.swift */; };
+		015E08A12AEE97B1000DB9EB /* WeightPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 015E08A02AEE97B1000DB9EB /* WeightPicker.swift */; };
+		015E08A32AEE9862000DB9EB /* GenderPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 015E08A22AEE9862000DB9EB /* GenderPicker.swift */; };
+		015E08A52AEFB8E0000DB9EB /* AnimatingCircleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 015E08A42AEFB8E0000DB9EB /* AnimatingCircleView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -35,12 +40,17 @@
 		015AB0752ABDD07000783BE9 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		015AB0782ABDD07000783BE9 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		015AB07F2ABDD0B500783BE9 /* StartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartView.swift; sourceTree = "<group>"; };
-		015AB0812ABDD0CE00783BE9 /* AnimationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimationView.swift; sourceTree = "<group>"; };
+		015AB0812ABDD0CE00783BE9 /* AnimationOverView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimationOverView.swift; sourceTree = "<group>"; };
 		015AB0832ABDD0FE00783BE9 /* TestTrack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestTrack.swift; sourceTree = "<group>"; };
 		015AB0852ABDD12200783BE9 /* GameOverView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameOverView.swift; sourceTree = "<group>"; };
 		015AB0872ABDD14200783BE9 /* GeneratePath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneratePath.swift; sourceTree = "<group>"; };
 		015AB0912ACF300A00783BE9 /* RecordingTouchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordingTouchView.swift; sourceTree = "<group>"; };
 		015AB0992ADD6D5400783BE9 /* MailComposeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MailComposeView.swift; sourceTree = "<group>"; };
+		015E08992AEE866E000DB9EB /* UnitsPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnitsPicker.swift; sourceTree = "<group>"; };
+		015E089E2AEE969B000DB9EB /* TimePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimePicker.swift; sourceTree = "<group>"; };
+		015E08A02AEE97B1000DB9EB /* WeightPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeightPicker.swift; sourceTree = "<group>"; };
+		015E08A22AEE9862000DB9EB /* GenderPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenderPicker.swift; sourceTree = "<group>"; };
+		015E08A42AEFB8E0000DB9EB /* AnimatingCircleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimatingCircleView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -74,18 +84,9 @@
 			isa = PBXGroup;
 			children = (
 				015AB0712ABDD06F00783BE9 /* SoberSenseApp.swift */,
-				015AB07F2ABDD0B500783BE9 /* StartView.swift */,
-				0144DE5C2AEA9D3A0083CFFA /* ExplanationView.swift */,
-				0144DE5A2AEA9C970083CFFA /* AlchoholUnitTable.swift */,
-				015AB0832ABDD0FE00783BE9 /* TestTrack.swift */,
-				015AB0812ABDD0CE00783BE9 /* AnimationView.swift */,
-				0144DE5E2AEABF860083CFFA /* InitialAnimationView.swift */,
-				015AB0872ABDD14200783BE9 /* GeneratePath.swift */,
-				015AB0912ACF300A00783BE9 /* RecordingTouchView.swift */,
-				015AB0852ABDD12200783BE9 /* GameOverView.swift */,
-				0144DE622AEADB890083CFFA /* CalculateBAC.swift */,
-				0144DE602AEAC1BF0083CFFA /* GameSummaryView.swift */,
-				015AB0992ADD6D5400783BE9 /* MailComposeView.swift */,
+				015E089B2AEE9128000DB9EB /* StartingScreen */,
+				015E089C2AEE919E000DB9EB /* AnimationScreen */,
+				015E089D2AEE9472000DB9EB /* FinalScreen */,
 				015AB0752ABDD07000783BE9 /* Assets.xcassets */,
 				015AB0772ABDD07000783BE9 /* Preview Content */,
 			);
@@ -98,6 +99,44 @@
 				015AB0782ABDD07000783BE9 /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		015E089B2AEE9128000DB9EB /* StartingScreen */ = {
+			isa = PBXGroup;
+			children = (
+				015AB07F2ABDD0B500783BE9 /* StartView.swift */,
+				015E08A22AEE9862000DB9EB /* GenderPicker.swift */,
+				015E089E2AEE969B000DB9EB /* TimePicker.swift */,
+				015E08A02AEE97B1000DB9EB /* WeightPicker.swift */,
+				015E08992AEE866E000DB9EB /* UnitsPicker.swift */,
+				0144DE5C2AEA9D3A0083CFFA /* ExplanationView.swift */,
+				0144DE5A2AEA9C970083CFFA /* AlchoholUnitTable.swift */,
+			);
+			path = StartingScreen;
+			sourceTree = "<group>";
+		};
+		015E089C2AEE919E000DB9EB /* AnimationScreen */ = {
+			isa = PBXGroup;
+			children = (
+				015AB0872ABDD14200783BE9 /* GeneratePath.swift */,
+				015AB0912ACF300A00783BE9 /* RecordingTouchView.swift */,
+				0144DE5E2AEABF860083CFFA /* InitialAnimationView.swift */,
+				015AB0812ABDD0CE00783BE9 /* AnimationOverView.swift */,
+				015E08A42AEFB8E0000DB9EB /* AnimatingCircleView.swift */,
+				015AB0832ABDD0FE00783BE9 /* TestTrack.swift */,
+			);
+			path = AnimationScreen;
+			sourceTree = "<group>";
+		};
+		015E089D2AEE9472000DB9EB /* FinalScreen */ = {
+			isa = PBXGroup;
+			children = (
+				015AB0852ABDD12200783BE9 /* GameOverView.swift */,
+				0144DE622AEADB890083CFFA /* CalculateBAC.swift */,
+				0144DE602AEAC1BF0083CFFA /* GameSummaryView.swift */,
+				015AB0992ADD6D5400783BE9 /* MailComposeView.swift */,
+			);
+			path = FinalScreen;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -173,16 +212,21 @@
 				015AB0862ABDD12200783BE9 /* GameOverView.swift in Sources */,
 				015AB0882ABDD14200783BE9 /* GeneratePath.swift in Sources */,
 				0144DE5B2AEA9C970083CFFA /* AlchoholUnitTable.swift in Sources */,
-				015AB0822ABDD0CE00783BE9 /* AnimationView.swift in Sources */,
+				015E08A12AEE97B1000DB9EB /* WeightPicker.swift in Sources */,
+				015AB0822ABDD0CE00783BE9 /* AnimationOverView.swift in Sources */,
 				0144DE632AEADB890083CFFA /* CalculateBAC.swift in Sources */,
 				0144DE5F2AEABF860083CFFA /* InitialAnimationView.swift in Sources */,
+				015E089A2AEE866E000DB9EB /* UnitsPicker.swift in Sources */,
 				015AB0722ABDD06F00783BE9 /* SoberSenseApp.swift in Sources */,
 				015AB0802ABDD0B500783BE9 /* StartView.swift in Sources */,
+				015E089F2AEE969B000DB9EB /* TimePicker.swift in Sources */,
+				015E08A52AEFB8E0000DB9EB /* AnimatingCircleView.swift in Sources */,
 				015AB09A2ADD6D5400783BE9 /* MailComposeView.swift in Sources */,
 				0144DE612AEAC1BF0083CFFA /* GameSummaryView.swift in Sources */,
 				015AB0922ACF300A00783BE9 /* RecordingTouchView.swift in Sources */,
 				0144DE5D2AEA9D3A0083CFFA /* ExplanationView.swift in Sources */,
 				015AB0842ABDD0FE00783BE9 /* TestTrack.swift in Sources */,
+				015E08A32AEE9862000DB9EB /* GenderPicker.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -314,11 +358,13 @@
 				DEVELOPMENT_TEAM = 2438PM67S7;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UIRequiresFullScreen = YES;
+				INFOPLIST_KEY_UIStatusBarStyle = UIStatusBarStyleLightContent;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -344,11 +390,13 @@
 				DEVELOPMENT_TEAM = 2438PM67S7;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UIRequiresFullScreen = YES;
+				INFOPLIST_KEY_UIStatusBarStyle = UIStatusBarStyleLightContent;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

@@ -9,7 +9,6 @@ import SwiftUI
 
 struct UnitsPicker: View {
     @Binding var selectedValue: Double
-    @Binding var isShowingUnitTable: Bool
 
     var body: some View {
         VStack {
@@ -27,21 +26,6 @@ struct UnitsPicker: View {
                 }
             }
             
-            HStack {
-                Text("Units of drinks")
-                Image(systemName: "questionmark.circle.fill")
-            }
-            .foregroundColor(.blue)
-            .onTapGesture {
-                withAnimation {
-                    isShowingUnitTable.toggle()
-                }
-            }
-            
-            if isShowingUnitTable {
-                AlcoholUnitTable()
-                    .padding()
-            }
             
         }
     }

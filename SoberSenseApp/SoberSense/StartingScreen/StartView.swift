@@ -43,9 +43,26 @@ struct StartView: View {
                     .padding()
                 
                 
-                UnitsPicker(selectedValue: $unitsDrunk, isShowingUnitTable: $isShowingUnitTable)
+                UnitsPicker(selectedValue: $unitsDrunk)
                     .frame(maxWidth: 240)
                     .padding()
+                
+                
+                HStack {
+                    Text("Units of drinks")
+                    Image(systemName: "questionmark.circle.fill")
+                }
+                .foregroundColor(.blue)
+                .onTapGesture {
+                    withAnimation {
+                        isShowingUnitTable.toggle()
+                    }
+                }
+                
+                if isShowingUnitTable {
+                    AlcoholUnitTable()
+                        .padding()
+                }
                 
 
                 WeightPicker(weight: $weight, isWeightInputValid: $isWeightInputValid, didTapNext: $didTapNext)

@@ -29,7 +29,7 @@ struct StartView: View {
     @State private var didTapNext = false
     
     var shouldShowWaitText: Bool {
-            let totalMinutes = (selectedHour * 60) + selectedMinute
+            let totalMinutes = (selectedHour * 60) + selectedMinute * 10
             return didTapNext && totalMinutes < 30 && unitsDrunk > 0
         }
     
@@ -83,7 +83,7 @@ struct StartView: View {
                     .background(Color.blue)
                     .foregroundColor(.white)
                     .cornerRadius(10)
-                    .disabled(!isWeightInputValid)
+                    .disabled(!isWeightInputValid || shouldShowWaitText)
                     .onTapGesture {
                         didTapNext = true
                     }

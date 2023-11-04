@@ -48,32 +48,33 @@ class CNNmodel(nn.Module):
         self.ReLU = nn.ReLU()
 
         self.conv1 = nn.Conv2d(input_channels, 32, kernel_size=(3, 10), padding = 'same')
-        # will give (B, 32, 3, 1525)
-
+        # Sample data: will give shape (B, 32, 3, 1525)
 
         # will convolve along the time dimension 
-        maxpool1_ks = (1,25)
+        maxpool1_ks = (1,5)
 
-        # input of shape (B, 32, 3, 1525)
+        # Sample data: input (B, 32, 3, 1525)
         self.maxpool1 = nn.MaxPool2d(kernel_size = maxpool1_ks)
-        # output of shape (B, 32, 3, 61)
+        # Sample data: output (B, 32, 3, 1525/maxpool1_ks[1])
 
         # will combine across x, y and time stamp
         conv2_ks = (3, 3)
 
-        # input of shape (B, 32, 3, 61)
+        # Sample data: input (B, 32, 3, 1525/maxpool1_ks[1])
         self.conv2 = nn.Conv2d(32, 64, kernel_size = conv2_ks)
-        # will give (B, 64, 1, 59)
+        # Sample data: output (B, 64, 1, 1525/maxpool1_ks[1] - (conv2_ks[1] - 1))
 
         self.flatten = nn.Flatten()
 
         # size of resulting last dim from conv2
         conv2_result_dim = (num_samples / maxpool1_ks[1]) - (conv2_ks[1] - 1)
-        # will = 59, if num_samples = 1525
+        # Sample data: will equal 59
 
-        self.fc1 = nn.Linear(64 * int(conv2_result_dim), 128)
+        self.fc1 = nn.Linear(64 * int(conv2_result_dim), 1024)
+
+        self.fc2 = nn.Linear(1024, 256)
         
-        self.fc2 = nn.Linear(128, 1)
+        self.fc3 = nn.Linear(256, 1)
 
         
 
@@ -97,8 +98,11 @@ class CNNmodel(nn.Module):
         # outputs shape of (B, 128)
         x = self.fc1(x)
         x = self.ReLU(x)
-        
+
         x = self.fc2(x)
+        x = self.ReLU(x)
+        
+        x = self.fc3(x)
 
         return x
     
@@ -109,7 +113,7 @@ class CNNmodel(nn.Module):
 # test_data has 40 samples, with either 0, 5 or 10 units drunk, and simulated 'drunk behaviour'
 
 
-learning_rate = 3e-3
+learning_rate = 6e-3
 batch_size = 8
 
 loss_fn = nn.MSELoss()

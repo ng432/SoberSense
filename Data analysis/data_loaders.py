@@ -5,10 +5,10 @@ import torch as t
 from torch.utils.data import DataLoader, random_split
 
 
-# Returns tensor of shape:  [Ch, D, A]
+# Returns tensor of shape:  [Ch, D, S]
 # Ch (=2): channels, one representing touch data, one representing animation path of circle
 # D (=3): x coordinate, y coordinate, time
-# A: Number of points of animation path (including those interpolated). touchData padded with 0s to match animation path
+# S: Number of samples of animation path (including those interpolated). touchData padded with 0s to match animation path length
 def sample_transform(sample_data, device='mps'):
     path_data = t.tensor(
         [sample_data["randomPath"]["X"], sample_data["randomPath"]["Y"], sample_data["randomPath"]["time"]]
@@ -53,10 +53,6 @@ def train_loop(dataloader, model, loss_fn, optimizer):
         # Creating prediction and loss
         pred = model(X)
         loss = loss_fn(pred, y)
-
-        print("pred shape:", pred.shape, "\n")
-        print("labael shape:", y.shape, "\n")
-        print("loss shape:", loss.shape, "\n")
 
         # Backpropagation
         loss.backward()

@@ -5,6 +5,9 @@ import torch as t
 from torch.utils.data import DataLoader, random_split
 
 
+# Contains functions for loading data
+
+
 # Returns tensor of shape:  [Ch, D, S]
 # Ch (=2): channels, one representing touch data, one representing animation path of circle
 # D (=3): x coordinate, y coordinate, time

@@ -8,45 +8,6 @@ from torch.utils.data import DataLoader, random_split
 # Contains functions for loading data
 
 
-# Returns tensor of shape:  [Ch, D, S]
-# Ch (=2): channels, one representing touch data, one representing animation path of circle
-# D (=3): x coordinate, y coordinate, time
-# S: Number of samples of animation path (including those interpolated). touchData padded with 0s to match animation path length
-def sample_transform(sample_data, device='mps'):
-    path_data = t.tensor(
-        [sample_data["randomPath"]["X"], sample_data["randomPath"]["Y"], sample_data["randomPath"]["time"]]
-    )
-
-    touch_data = t.tensor(
-        [sample_data["touchData"]["X"], sample_data["touchData"]["Y"], sample_data["touchData"]["time"]]
-    )
-
-    path_length = path_data.shape[1]
-    td_length = touch_data.shape[1]
-
-    if td_length > path_length:
-        raise AssertionError(
-            f"Touch data (length={td_length})  is longer than the animation path data (length={path_length}). Try increase the number of interpolation points in the animation path."
-        )
-
-    padding_length = path_length - td_length
-
-    front_pad = padding_length // 2
-    back_pad = padding_length - front_pad
-
-    padded_td = t.nn.functional.pad(touch_data, (front_pad, back_pad))
-
-    sample_tensor = t.stack((padded_td, path_data))
-
-    # MPS requires float32
-    if device == "mps":
-        sample_tensor = sample_tensor.to(t.float32)
-        sample_tensor = sample_tensor.to(device)
-
-    return sample_tensor
-
-
-
 def train_loop(dataloader, model, loss_fn, optimizer):
     size = len(dataloader.dataset)
 

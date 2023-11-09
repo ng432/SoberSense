@@ -4,7 +4,8 @@
 
 import os
 from unpacking_data import SoberSenseDataset
-from data_loaders import sample_transform, train_loop, test_loop
+from data_loaders import train_loop, test_loop
+from data_transforms import sample_transform
 import torch as t
 from torch import nn
 from torch.utils.data import DataLoader, random_split

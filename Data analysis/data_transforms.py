@@ -12,6 +12,7 @@ from math import sqrt
 # D (=3): x coordinate, y coordinate, time
 # S: Number of samples of animation path (including those interpolated). touchData padded with 0s to match animation path length
 def sample_transform(sample_data, device='mps'):
+
     path_data = t.tensor(
         [sample_data["randomPath"]["X"], sample_data["randomPath"]["Y"], sample_data["randomPath"]["time"]]
     )
@@ -65,66 +66,83 @@ def addxynoise(sample, variance):
 # crops data with frame size of new_length relevant to the last dimension
 # new_length is from 0 to 1 and gives scale of cropping
 # e.g. new_length = 0.1 data cropped to 10% of full length
-def cropsample(sample, new_length = 0.2):
+# crops based on the time of the path data
+def croptime_batch(batch, new_length = 0.2):
 
     if new_length > 1 or new_length < 0:
         raise ValueError("new_length must be between 0 and 1")
     
+    sample_list = []
     # running through samples in batch
-    for i in range(sample.shape[0]):
+    for i in range(batch.shape[0]):
 
-        sample[i] = select_timespecific_data(sample[i], new_length)
+        cropped_sample = croptime_sample(batch[i], new_length)
+        
+        sample_list.append(cropped_sample)
 
-    return sample
+    return t.stack(sample_list, dim=0)
 
 
 # takes a sample of [2, 3, N] (i.e. individual sample from a batch)
-def select_timespecific_data(sample, new_length):
+def croptime_sample(sample, new_length):
 
     num_points = sample.shape[-1]
 
     frame_size = int(new_length * num_points) 
     
-    start_index = int(t.randn().item() * num_points) - frame_size
+    start_index = int(t.rand(1).item() * (num_points - frame_size))
+
+    path_data = sample[1, :, start_index:start_index + frame_size]
 
     # taking the min and max times from path data, to then select touch data 
-    min_time = sample[1,2,start_index]
-    max_time = sample[1,2,start_index + frame_size]
+    min_time = path_data[2,0].item()
+    max_time = path_data[2,-1].item()
 
     # mask of touch data samples that have the same time frame as cropped path data 
-    mask = (sample[0,2,:] > min_time and sample[0,2,:] < max_time)
-    indices_of_mask = t.nonzero(mask)
+    min_mask = (sample[0,2,:] > min_time)
 
-    touch_data = sample[0,:, indices_of_mask[0]:indices_of_mask[-1]]
+    # Necessary to deal with zero padding already added at end of tensor
+    # Therefore when max_mask is taken, it won't always take index to end of tensor 
+    sample[0,2, (sample[0,2,:] == 0)] = 1.1 
+
+    max_mask = (sample[0,2,:] < max_time)
+
+    # extracting the indices for the times in touch data that match the cropped path data
+    touch_start_index = t.nonzero(min_mask)[0]
+    touch_end_index = t.nonzero(max_mask)[-1]
+
+    touch_data = sample[0,:, touch_start_index:touch_end_index]
 
     touch_length = touch_data.shape[-1] 
 
     if touch_length > frame_size:
-        raise ValueError(f"Cropped touch data (length ={touch_length}) has more data points than path data (length = {frame_size}). Try more interpolation points for path data.")
+        raise ValueError(f"Cropped touch data (length = {touch_length}) has more data points than path data (length = {frame_size}). Try more interpolation points for path data.")
     
+    # padding touch data
+    padding_length = frame_size - touch_length
+    front_pad = padding_length // 2
+    back_pad = padding_length - front_pad
+    padded_td = t.nn.functional.pad(touch_data, (front_pad, back_pad))
+
+    cropped_sample = t.stack((padded_td, path_data))
+
+    return cropped_sample
 
 
 
-    
-    
 
-  
-
-    selected_time_mask =  (sample[...,index, 2, :] > start_time) & (sample[...,index, 2, :] < start_time + time_length)
-
-    selected_time_mask = selected_time_mask.unsqueeze(1)
-
-    selected_time_mask = selected_time_mask.repeat_interleave(3, dim=-2)
-
-    # either touch or path data
-    selected_data = sample[...,index,:,:]
-
-    print("selected dadta shape", selected_data.shape)
-    print("mask shape", selected_time_mask.shape)
-
-    return selected_data[selected_time_mask]
+# %%
 
 
+# testing croptime_batch
+
+# TODO: work out why it's not varying the seleceted data in this batch
+
+f = data_set[0][0]
+
+fake_batch = t.stack((f,f,f,f))
+
+test = croptime_batch(fake_batch, new_length=0.1)
 
 
 # %%

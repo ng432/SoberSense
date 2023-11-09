@@ -46,12 +46,21 @@ def sample_transform(sample_data, device='mps'):
     return sample_tensor
 
 
-def flipx(sample):
-    sample[...,0,:] *= -1
+def randomly_flipx(sample):
+
+    num = t.rand(1).item()
+
+    if num > 0.5:
+        sample[...,0,:] *= -1
+
     return sample
 
-def flipy(sample):
-    sample[...,1,:] *= -1
+def randomly_flipy(sample):
+
+    num = t.rand(1).item()
+
+    if num > 0.5:
+        sample[...,1,:] *= -1
     return sample
 
 def addxynoise(sample, variance):
@@ -133,16 +142,3 @@ def croptime_sample(sample, new_length):
 
 # %%
 
-
-# testing croptime_batch
-
-# TODO: work out why it's not varying the seleceted data in this batch
-
-f = data_set[0][0]
-
-fake_batch = t.stack((f,f,f,f))
-
-test = croptime_batch(fake_batch, new_length=0.1)
-
-
-# %%

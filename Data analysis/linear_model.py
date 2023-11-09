@@ -11,6 +11,7 @@ from torch.utils.data import DataLoader, random_split
 device = "cuda" if t.cuda.is_available() else "mps" if t.backends.mps.is_available() else "cpu"
 print(f"Using {device} device")
 
+#%%
 
 # creating test
 # Starting with just a bog standard linear ReLU network
@@ -47,7 +48,7 @@ class linearNetwork(nn.Module):
 
 # test_data has 40 samples, with either 0, 5 or 10 units drunk, and simulated 'drunk behaviour'
 data_set = SoberSenseDataset(
-    "test_data",
+    "sample_data",
     sample_transform=sample_transform,
     label_transform=lambda x: t.tensor(x, dtype=t.float32).to(device),
     animation_interp_number=60,

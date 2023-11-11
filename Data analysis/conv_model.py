@@ -5,7 +5,7 @@
 import os
 from unpacking_data import SoberSenseDataset
 from data_loaders import train_loop, test_loop
-from data_transforms import sample_transform
+from data_transforms import full_augmentation_transform
 import torch as t
 from torch import nn
 from torch.utils.data import DataLoader, random_split
@@ -21,25 +21,28 @@ class regressionCNN(nn.Module):
     def __init__(self, input_channels, num_samples):
         super(regressionCNN, self).__init__()
 
-        # Size of sample data is B, 2, 3, 1525
+        # TODO: make change variables so it's not specific to 1525 data points 
+
+        # Size of sample data is B, 2, 3, N
         # B: batch size 
         # 2 = input_channel, animation path or touch data
         # 3: x, y or timestamp
-        # 1525 = sample_number number of data points
+        # N = num_samples number of data points 
 
         self.ReLU = nn.ReLU()
 
         conv1_ks = (1,10)
 
         self.conv1 = nn.Conv2d(input_channels, 32, kernel_size = conv1_ks, padding = 'same')
-        # Sample data: will give shape (B, 32, 3, 1525)
+        # Sample data: will give shape (B, 32, 3, N)
 
         # will extract along the time dimension 
         maxpool1_ks = (1,25)
 
+        # TODO: fix here
         # Sample data: input (B, 32, 3, 1525)
         self.maxpool1 = nn.MaxPool2d(kernel_size = maxpool1_ks)
-        # Sample data: output (B, 32, 3, 1525/maxpool1_ks[1])
+        # Sample data: output (B, 32, 3, N/maxpool1_ks[1])
 
         # will combine across x, y and time stamp
         conv2_ks = (3, 3)
@@ -59,8 +62,6 @@ class regressionCNN(nn.Module):
         self.fc2 = nn.Linear(1024, 256)
         
         self.fc3 = nn.Linear(256, 1)
-
-        
 
     def forward(self, x):
 
@@ -92,9 +93,12 @@ class regressionCNN(nn.Module):
     
 #%%
 
+# sample_data has 40 samples, with either 0, 5 or 10 units drunk, and simulated 'drunk behaviour'
+# therefore, data_augmentation applied
+
 data_set = SoberSenseDataset(
     "sample_data",
-    sample_transform=sample_transform,
+    sample_transform=full_augmentation_transform,
     label_transform=lambda x: t.tensor(x, dtype=t.float32).to(device),
     animation_interp_number=60,
 )
@@ -107,21 +111,19 @@ test_size = len(data_set) - train_size
 
 train_dataset, test_dataset = random_split(data_set, [train_size, test_size])
 
-train_dataloader = DataLoader(train_dataset, batch_size=4)
-test_dataloader = DataLoader(test_dataset, batch_size=4)
 
 #%%
-
-# test_data has 40 samples, with either 0, 5 or 10 units drunk, and simulated 'drunk behaviour'
-
 
 learning_rate = 6e-3
 batch_size = 8
 
+train_dataloader = DataLoader(train_dataset, batch_size=4)
+test_dataloader = DataLoader(test_dataset, batch_size=4)
+
 loss_fn = nn.MSELoss()
 
-# number of samples per recordin 
-num_samples = data_set[0][0].shape[2]
+# number of samples per recording
+num_samples = data_set[0][0].shape[-1]
 
 cnn_model = regressionCNN(
     input_channels = 2, 

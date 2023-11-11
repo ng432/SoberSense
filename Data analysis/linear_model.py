@@ -3,7 +3,7 @@
 import os
 from unpacking_data import SoberSenseDataset
 from data_loaders import train_loop, test_loop
-from data_transforms import sample_transform
+from data_transforms import full_augmentation_transform
 import torch as t
 from torch import nn
 from torch.utils.data import DataLoader, random_split
@@ -23,16 +23,16 @@ class linearNetwork(nn.Module):
         self.input_size = input_size
 
         self.linear_relu_stack = nn.Sequential(
-            nn.Linear(input_size, 2048),
-            nn.ReLU(),
-            nn.BatchNorm1d(2048), 
-            nn.Linear(2048, 1024),  # Adjusted to match the previous batch normalization
+            nn.Linear(input_size, 1024),
             nn.ReLU(),
             nn.BatchNorm1d(1024), 
-            nn.Linear(1024, 256),   # Adjusted to match the previous batch normalization
+            nn.Linear(1024, 512),  
+            nn.ReLU(),
+            nn.BatchNorm1d(512), 
+            nn.Linear(512, 256),   
             nn.ReLU(),
             nn.BatchNorm1d(256),  
-            nn.Linear(256, 64),     # Adjusted to match the previous batch normalization
+            nn.Linear(256, 64),     
             nn.ReLU(),
             nn.BatchNorm1d(64),  
             nn.Linear(64, 1) 
@@ -49,7 +49,7 @@ class linearNetwork(nn.Module):
 # test_data has 40 samples, with either 0, 5 or 10 units drunk, and simulated 'drunk behaviour'
 data_set = SoberSenseDataset(
     "sample_data",
-    sample_transform=sample_transform,
+    sample_transform=full_augmentation_transform,
     label_transform=lambda x: t.tensor(x, dtype=t.float32).to(device),
     animation_interp_number=60,
 )
@@ -62,21 +62,23 @@ test_size = len(data_set) - train_size
 
 train_dataset, test_dataset = random_split(data_set, [train_size, test_size])
 
-train_dataloader = DataLoader(train_dataset, batch_size=4)
-test_dataloader = DataLoader(test_dataset, batch_size=4)
+batch_size = 10
+
+train_dataloader = DataLoader(train_dataset, batch_size=batch_size)
+test_dataloader = DataLoader(test_dataset, batch_size=batch_size)
 
 input_size = data_set[0][0].flatten().shape[0]
 
 linear_model = linearNetwork(input_size=input_size).to(device)
 
 learning_rate = 3e-3
-batch_size = 8
+
 
 loss_fn = nn.MSELoss()
 
 optimizer = t.optim.SGD(linear_model.parameters(), lr=learning_rate)
 
-epochs = 100
+epochs = 1000
 for i in range(epochs):
     print(f"Epoch {i+1}\n-------------------------------")
     train_loop(train_dataloader, linear_model, loss_fn, optimizer)

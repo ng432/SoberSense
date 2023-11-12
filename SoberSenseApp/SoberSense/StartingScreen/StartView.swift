@@ -11,21 +11,14 @@ struct StartView: View {
     
     @State private var isExplanationViewVisible = true
     @State private var isShowingUnitTable = false
-    
     @State private var selectedHour = 0
     @State private var selectedMinute = 0
-    
     @State private var weight = 0
     @State private var isWeightInputValid = false
-    
     @State private var unitsDrunk: Double = 0.0
-    
     @State private var gameAttempt = TestTrack()
-    
     @State private var selectedGender: String = "Male" // Initial selection
-    
     @State private var showDetails = false
-    
     @State private var didTapNext = false
     
     var shouldShowWaitText: Bool {
@@ -42,11 +35,9 @@ struct StartView: View {
                     .frame(maxWidth: 350)
                     .padding()
                 
-                
                 UnitsPicker(selectedValue: $unitsDrunk)
                     .frame(maxWidth: 240)
                     .padding()
-                
                 
                 HStack {
                     Text("Units of drinks")
@@ -64,16 +55,13 @@ struct StartView: View {
                         .padding()
                 }
                 
-
                 WeightPicker(weight: $weight, isWeightInputValid: $isWeightInputValid, didTapNext: $didTapNext)
                     .frame(width: 300)
                     .padding()
                 
-        
                 TimePicker(selectedHour: $selectedHour, selectedMinute: $selectedMinute)
                     .frame(width: 300)
                     .padding()
-                
                 
                 GenderPicker(selectedGender: $selectedGender)
                     .padding()

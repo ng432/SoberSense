@@ -28,7 +28,7 @@ struct GameSummaryView: View {
             }
 
             HStack {
-                Text("Gender:")
+                Text("Sex:")
                 Spacer()
                 Text(gameAttempt.gender)
             }

@@ -17,6 +17,9 @@ struct GameOverView: View {
     @State private var testTrackData: Data?
     @State private var isFileWritingComplete = false
     
+    @State private var showAlert = false
+    @State private var dataHasBeenShared = false
+    
     @Binding var gameAttempt: TestTrack
     
     init(gameAttempt: Binding<TestTrack>) {
@@ -28,9 +31,9 @@ struct GameOverView: View {
         NavigationView{
             
             if isFileWritingComplete {
-                        
+                
                 VStack{
-
+                    
                     VStack {
                         
                         if gameAttempt.touchData.isEmpty
@@ -38,7 +41,10 @@ struct GameOverView: View {
                             
                             Text("No touch data was recorded. \n Please try again.")
                                 .multilineTextAlignment(.center)
-                            
+                                .onAppear{
+                                    // necessary so return back can function
+                                    dataHasBeenShared = true
+                                }
                             
                         }
                         else if canSendMail {
@@ -54,10 +60,14 @@ struct GameOverView: View {
                             Text("Please check the above data is correct. ")
                                 .frame(maxWidth: 300)
                             
-                            Button("Share data here.") {
+                            Button("Click here to email the recorded data.") {
                                 self.isMailComposeViewShowing.toggle()
+                                dataHasBeenShared = true
                             }
                             .padding()
+                            .background(Color.blue)
+                            .foregroundColor(.white)
+                            .cornerRadius(10)
                             
                             
                         }
@@ -72,34 +82,32 @@ struct GameOverView: View {
                                 .padding()
                             
                             Text("Email is not configured on this device.")
+                                .onAppear{
+                                    // necessary so return back can function
+                                    dataHasBeenShared = true
+                                }
                             
                         }
                     }
                     .sheet(isPresented: $isMailComposeViewShowing) {
                         MailComposeView(isShowing: self.$isMailComposeViewShowing, attachmentData: testTrackData, gameAttempt: gameAttempt)
                     }
+                
+                    ReturnToStartButton(dataHasBeenShared: $dataHasBeenShared,
+                                        isNavigationActive: $isNavigationActive,
+                                        showAlert: $showAlert)
                     
-                    HStack {
-                        Button("Return to start") {
-                            // Handle "Yes" button action here
-                            isNavigationActive = true
-                        }
-                        .padding()
-                        .background(Color.blue)
-                        .foregroundColor(.white)
-                        .cornerRadius(10)
-                        
-                    }
                     NavigationLink("", destination: StartView(), isActive: $isNavigationActive)
                                        .opacity(0)
                     
                 }
 
-                    } else {
+    
+                } else {
+                
+                    ProgressView("Writing Data...")
                     
-                        ProgressView("Writing Data...")
-                        
-                    }
+                }
                         
         }
         .navigationBarBackButtonHidden(true)

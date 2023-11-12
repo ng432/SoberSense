@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0112EA922B012599007EC307 /* ReturnToStartButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0112EA912B012599007EC307 /* ReturnToStartButton.swift */; };
 		0144DE5B2AEA9C970083CFFA /* AlchoholUnitTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0144DE5A2AEA9C970083CFFA /* AlchoholUnitTable.swift */; };
 		0144DE5D2AEA9D3A0083CFFA /* ExplanationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0144DE5C2AEA9D3A0083CFFA /* ExplanationView.swift */; };
 		0144DE5F2AEABF860083CFFA /* InitialAnimationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0144DE5E2AEABF860083CFFA /* InitialAnimationView.swift */; };
@@ -29,6 +30,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0112EA912B012599007EC307 /* ReturnToStartButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReturnToStartButton.swift; sourceTree = "<group>"; };
 		0144DE5A2AEA9C970083CFFA /* AlchoholUnitTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlchoholUnitTable.swift; sourceTree = "<group>"; };
 		0144DE5C2AEA9D3A0083CFFA /* ExplanationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExplanationView.swift; sourceTree = "<group>"; };
 		0144DE5E2AEABF860083CFFA /* InitialAnimationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InitialAnimationView.swift; sourceTree = "<group>"; };
@@ -129,6 +131,7 @@
 			isa = PBXGroup;
 			children = (
 				015AB0852ABDD12200783BE9 /* GameOverView.swift */,
+				0112EA912B012599007EC307 /* ReturnToStartButton.swift */,
 				0144DE622AEADB890083CFFA /* CalculateBAC.swift */,
 				0144DE602AEAC1BF0083CFFA /* GameSummaryView.swift */,
 				015AB0992ADD6D5400783BE9 /* MailComposeView.swift */,
@@ -215,6 +218,7 @@
 				0144DE5F2AEABF860083CFFA /* InitialAnimationView.swift in Sources */,
 				015E089A2AEE866E000DB9EB /* UnitsPicker.swift in Sources */,
 				015AB0722ABDD06F00783BE9 /* SoberSenseApp.swift in Sources */,
+				0112EA922B012599007EC307 /* ReturnToStartButton.swift in Sources */,
 				015AB0802ABDD0B500783BE9 /* StartView.swift in Sources */,
 				015E089F2AEE969B000DB9EB /* TimePicker.swift in Sources */,
 				015E08A52AEFB8E0000DB9EB /* AnimatingCircleView.swift in Sources */,

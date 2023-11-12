@@ -22,12 +22,14 @@ struct AnimatingCircleView: View {
                 .frame(width: lineThickness, height: screenSize.height)
                 .foregroundColor(Color.red)
                 .offset(x: CGFloat(coordinates[currentIndex].xDimScale) * screenSize.width, y: 0)
+                .edgesIgnoringSafeArea(.all)
 
             // Horizontal Line
             Rectangle()
                 .frame(width: screenSize.width, height: lineThickness)
                 .foregroundColor(Color.red)
                 .offset(x: 0, y: CGFloat(coordinates[currentIndex].yDimScale) * screenSize.height)
+                .edgesIgnoringSafeArea(.all)
 
             
             Circle()

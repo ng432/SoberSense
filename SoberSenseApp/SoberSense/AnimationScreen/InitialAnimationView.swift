@@ -19,10 +19,12 @@ struct InitialAnimationView: View {
             Rectangle()
                 .frame(width: lineThickness, height: screenSize.height)
                 .foregroundColor(Color.red)
+                .edgesIgnoringSafeArea(.all)
 
             Rectangle()
                 .frame(width: screenSize.width, height: lineThickness)
                 .foregroundColor(Color.red)
+                .edgesIgnoringSafeArea(.all)
 
             Circle()
                 .frame(width: circleAnimatedRadius, height: circleAnimatedRadius)

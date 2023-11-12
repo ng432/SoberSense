@@ -30,11 +30,8 @@ struct AnimationOverView: View {
     @State private var timer: Publishers.Autoconnect<Timer.TimerPublisher> = Timer.publish(every: 2, on: .main, in: .common).autoconnect()
     
     @State private var touchPoint: CGPoint?
-    
     @State private var gameIsOver = false
-    
     @State private var animationHasStarted = false
-    
     @State private var recordTouches = false
 
     let screenSize = UIScreen.main.bounds.size
@@ -168,7 +165,7 @@ struct AnimationOverView: View {
 
         
         }
-        .navigationBarBackButtonHidden(animationHasStarted)
+        .navigationBarBackButtonHidden(true)
         
         .onAppear {
             // Xcode didn't like initalising timer and gameAttempt together within 'init' (throwing bug)

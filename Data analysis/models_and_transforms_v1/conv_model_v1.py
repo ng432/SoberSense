@@ -14,7 +14,6 @@ device = "cuda" if t.cuda.is_available() else "mps" if t.backends.mps.is_availab
 print(f"Using {device} device")
 
 
-
 #%%
 
 class regressionCNN(nn.Module):

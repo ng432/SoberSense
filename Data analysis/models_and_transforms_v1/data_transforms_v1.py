@@ -120,11 +120,9 @@ def addxynoise_totouch(sample, variance = 0.02):
 
     noise_shape = sample[0, :2, noise_mask].shape 
 
-    noise = t.randn(noise_shape)*sqrt(variance)
-    
-    # TODO finish sorting device situation
+    device = sample.device
 
-    # noise.to(device)
+    noise = t.randn(noise_shape, device = device)*sqrt(variance)
 
     sample[0, :2, noise_mask] += noise
 

@@ -51,9 +51,11 @@ class linearNetwork(nn.Module):
 
 # %%
 
+sample_data_path = os.path.join(parent_dir, 'sample_data')
+
 # test_data has 40 samples, with either 0, 5 or 10 units drunk, and simulated 'drunk behaviour'
 data_set = SoberSenseDataset(
-    "sample_data",
+    sample_data_path,
     sample_transform=full_augmentation_transform,
     label_transform=lambda x: t.tensor(x, dtype=t.float32).to(device)
 )

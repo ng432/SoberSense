@@ -42,7 +42,8 @@ class regressionCNN(nn.Module):
         # will extract along the time dimension 
         maxpool1_ks = (1,25)
 
-        # TODO: fix here
+        # TODO: fix kernel size to deal with values other than 1525
+        
         # Sample data: input (B, 32, 3, 1525)
         self.maxpool1 = nn.MaxPool2d(kernel_size = maxpool1_ks)
         # Sample data: output (B, 32, 3, N/maxpool1_ks[1])
@@ -99,8 +100,10 @@ class regressionCNN(nn.Module):
 # sample_data has 40 samples, with either 0, 5 or 10 units drunk, and simulated 'drunk behaviour'
 # therefore, data_augmentation applied
 
+sample_data_path = os.path.join(parent_dir, 'sample_data')
+
 data_set = SoberSenseDataset(
-    "sample_data",
+    sample_data_path,
     sample_transform=full_augmentation_transform,
     label_transform=lambda x: t.tensor(x, dtype=t.float32).to(device),
     animation_interp_number=60,

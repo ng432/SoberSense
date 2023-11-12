@@ -4,6 +4,7 @@
 
 import torch as t
 from math import sqrt
+from bezier_interpolation import AnimationPathBezierInterpolation
 
 # Contains transforms for data pre-processing and data augmentation
 
@@ -21,17 +22,29 @@ def full_augmentation_transform(sample_data, variance = 0.02, new_length = 0.2):
     # adding noise
     sample_data = addxynoise_totouch(sample_data, variance = variance)
 
-
     return sample_data 
 
     
 
-def prep_transform(sample_data, device='mps'):
+def prep_transform(sample_data, device='mps', animation_interp_number = 60):
     # Prepatory transform for collected data 
     # Returns tensor of shape:  [Ch, D, S]
     # Ch (=2): channels, one representing touch data, one representing animation path of circle
     # D (=3): x coordinate, y coordinate, time
     # S: Number of samples of animation path (including those interpolated). touchData padded with 0s to match animation path length
+
+    # interpolating animation on first access of data
+    if "interpolated" not in sample_data:
+
+        sample_data["randomPath"] = AnimationPathBezierInterpolation(
+                            sample_data["randomPath"],
+                            animation_interp_number,
+                            sample_data["controlPoints"],
+                            sample_data["animationDuration"],
+                            game_length=sample_data["gameLength"],
+                        )
+        
+        sample_data["interpolated"] = True
 
     path_data = t.tensor(
         [sample_data["randomPath"]["X"], sample_data["randomPath"]["Y"], sample_data["randomPath"]["time"]]
@@ -72,7 +85,11 @@ def randomly_flipx(sample):
 
     if num > 0.5:
         sample[...,0,:] *= -1
-        sample[...,0,:] += 1 
+        
+        # necessary to insure zero padding isn't flipped to 1 
+        non_zero_mask = (sample[0,0,:] != 0)
+
+        sample[...,0,non_zero_mask] += 1 
 
     return sample
 
@@ -82,29 +99,37 @@ def randomly_flipy(sample):
 
     if num > 0.5:
         sample[...,1,:] *= -1
-        sample[...,1,:] += 1 
+
+        # necessary to insure zero padding isn't flipped to 1 
+        non_zero_mask = (sample[0,1,:] != 0)
+
+        sample[...,1,non_zero_mask] += 1 
 
     return sample
 
 def addxynoise_totouch(sample, variance = 0.02):
 
-    noise_tensor = t.zeros_like(sample)
+    # need to avoid adding noise to zero padding  
+    noise_mask = (sample[0,0,:] != 0)
 
-    noise_shape = noise_tensor[...,0,:2,:].shape
-    # only x and y of touch data 
-    noise_tensor[...,0,:2,:] = t.randn(noise_shape)*sqrt(variance)
+    noise_shape = sample[0, :2, noise_mask].shape 
 
-    sample = sample + noise_tensor
+    noise = t.randn(noise_shape)*sqrt(variance)
+    
+    # TODO finish sorting device situation
 
-    # ensuring that noise doesn't give erroneou values
+    # noise.to(device)
+
+    sample[0, :2, noise_mask] += noise
+
+    # ensuring that noise doesn't give erroneous values
     sample = t.clamp(sample, min = 0, max = 1)
 
     return sample
 
-# crops data with frame size of new_length relevant to the last dimension
+# crops batched data with frame size of new_length relevant to the last dimension
 # new_length is from 0 to 1 and gives scale of cropping
 # e.g. new_length = 0.1 data cropped to 10% of full length
-# crops based on the time of the path data
 def croptime_batch(batch, new_length = 0.2):
 
     if new_length > 1 or new_length < 0:

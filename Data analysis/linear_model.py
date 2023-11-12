@@ -50,8 +50,7 @@ class linearNetwork(nn.Module):
 data_set = SoberSenseDataset(
     "sample_data",
     sample_transform=full_augmentation_transform,
-    label_transform=lambda x: t.tensor(x, dtype=t.float32).to(device),
-    animation_interp_number=60,
+    label_transform=lambda x: t.tensor(x, dtype=t.float32).to(device)
 )
 
 train_ratio = 0.8
@@ -78,7 +77,7 @@ loss_fn = nn.MSELoss()
 
 optimizer = t.optim.SGD(linear_model.parameters(), lr=learning_rate)
 
-epochs = 1000
+epochs = 100
 for i in range(epochs):
     print(f"Epoch {i+1}\n-------------------------------")
     train_loop(train_dataloader, linear_model, loss_fn, optimizer)

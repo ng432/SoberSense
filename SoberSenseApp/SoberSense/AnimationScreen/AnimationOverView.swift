@@ -93,7 +93,7 @@ struct AnimationOverView: View {
                                 circleAnimatedRadius: circleAnimatedRadius
                             )
                     
-                    // Display circle on touch,
+                    // Display circle on touch, and record touch data
                     if let touchPoint = touchPoint {
                             Circle()
                                 .frame(width: 60, height: 60)
@@ -135,39 +135,40 @@ struct AnimationOverView: View {
                 }
                 
             }
-                // Closure to run code on signal from timer
-                .onReceive(timer) { _ in
-        
-                    if animationHasStarted {
-                    
-                    withAnimation (.timingCurve(controlPoints[0], controlPoints[1], controlPoints[2], controlPoints[3], duration: animationDuration))
-                        {
-                            // Recording start time of movement to next coordinate
-                            if currentIndex < coordinates.count{
-                                var currentCoordinate = coordinates[currentIndex]
-                                currentCoordinate.time = Double(CACurrentMediaTime())
-                                pathRecord.append(currentCoordinate)
+            // Closure to run code on signal from timer
+            .onReceive(timer) { _ in
+    
+                if animationHasStarted {
                 
-                            }
-                            // Move to the next coordinate in the list
-                            currentIndex = (currentIndex + 1)
+                withAnimation (.timingCurve(controlPoints[0], controlPoints[1], controlPoints[2], controlPoints[3], duration: animationDuration))
+                    {
+                        // Recording start time of movement to next coordinate
+                        if currentIndex < coordinates.count{
+                            var currentCoordinate = coordinates[currentIndex]
+                            currentCoordinate.time = Double(CACurrentMediaTime())
+                            pathRecord.append(currentCoordinate)
+            
                         }
+                        // Move to the next coordinate in the list
+                        currentIndex = (currentIndex + 1)
                     }
                 }
-                .simultaneousGesture(DragGesture(coordinateSpace: .local)
-                    .onChanged { value in
-                        if animationHasStarted {
-                            touchPoint = value.location
-                        }
+            }
+        
+            .simultaneousGesture(DragGesture(coordinateSpace: .local)
+                .onChanged { value in
+                    if animationHasStarted {
+                        touchPoint = value.location
                     }
-                    .onEnded { _ in
-                        touchPoint = nil
-                    }
-                )
+                }
+                .onEnded { _ in
+                    touchPoint = nil
+                }
+            )
 
         
         }
-        .navigationBarBackButtonHidden(true)
+        .navigationBarBackButtonHidden(animationHasStarted)
         
         .onAppear {
             // Xcode didn't like initalising timer and gameAttempt together within 'init' (throwing bug)

@@ -1,9 +1,14 @@
 # %%
 
+import sys
 import os
+
+parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, parent_dir)
+
 from unpacking_data import SoberSenseDataset
 from data_loaders import train_loop, test_loop
-from data_transforms import full_augmentation_transform
+from data_transforms_v1 import full_augmentation_transform
 import torch as t
 from torch import nn
 from torch.utils.data import DataLoader, random_split

@@ -29,6 +29,9 @@ struct InitialAnimationView: View {
             Circle()
                 .frame(width: circleAnimatedRadius, height: circleAnimatedRadius)
                 .foregroundColor(Color.blue)
+                .onLongPressGesture(minimumDuration: 0.1){
+                    animationHasStarted = true
+                }
                
             Text("Hold your phone with your non-dominant hand.")
                 .multilineTextAlignment(.center)
@@ -58,13 +61,13 @@ struct InitialAnimationView: View {
                 .frame(maxWidth: 220)
                 .offset(x: 0, y: 90)
             
-            Text("Tap this box to start.")
+            Text("Hold your finger on the circle to start.")
                 .multilineTextAlignment(.center)
                 .padding(6)
-                .background(Color.red)
+                .background(Color.blue)
                 .foregroundColor(.white)
                 .cornerRadius(10)
-                .frame(maxWidth: 120)
+                .frame(maxWidth: 150)
                 .offset(x: 0, y: 180)
                 .onTapGesture {
                     animationHasStarted = true

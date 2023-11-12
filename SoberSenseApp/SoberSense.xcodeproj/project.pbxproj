@@ -20,7 +20,6 @@
 		015AB0842ABDD0FE00783BE9 /* TestTrack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 015AB0832ABDD0FE00783BE9 /* TestTrack.swift */; };
 		015AB0862ABDD12200783BE9 /* GameOverView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 015AB0852ABDD12200783BE9 /* GameOverView.swift */; };
 		015AB0882ABDD14200783BE9 /* GeneratePath.swift in Sources */ = {isa = PBXBuildFile; fileRef = 015AB0872ABDD14200783BE9 /* GeneratePath.swift */; };
-		015AB0922ACF300A00783BE9 /* RecordingTouchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 015AB0912ACF300A00783BE9 /* RecordingTouchView.swift */; };
 		015AB09A2ADD6D5400783BE9 /* MailComposeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 015AB0992ADD6D5400783BE9 /* MailComposeView.swift */; };
 		015E089A2AEE866E000DB9EB /* UnitsPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 015E08992AEE866E000DB9EB /* UnitsPicker.swift */; };
 		015E089F2AEE969B000DB9EB /* TimePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 015E089E2AEE969B000DB9EB /* TimePicker.swift */; };
@@ -44,7 +43,6 @@
 		015AB0832ABDD0FE00783BE9 /* TestTrack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestTrack.swift; sourceTree = "<group>"; };
 		015AB0852ABDD12200783BE9 /* GameOverView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameOverView.swift; sourceTree = "<group>"; };
 		015AB0872ABDD14200783BE9 /* GeneratePath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneratePath.swift; sourceTree = "<group>"; };
-		015AB0912ACF300A00783BE9 /* RecordingTouchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordingTouchView.swift; sourceTree = "<group>"; };
 		015AB0992ADD6D5400783BE9 /* MailComposeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MailComposeView.swift; sourceTree = "<group>"; };
 		015E08992AEE866E000DB9EB /* UnitsPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnitsPicker.swift; sourceTree = "<group>"; };
 		015E089E2AEE969B000DB9EB /* TimePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimePicker.swift; sourceTree = "<group>"; };
@@ -119,7 +117,6 @@
 			isa = PBXGroup;
 			children = (
 				015AB0872ABDD14200783BE9 /* GeneratePath.swift */,
-				015AB0912ACF300A00783BE9 /* RecordingTouchView.swift */,
 				0144DE5E2AEABF860083CFFA /* InitialAnimationView.swift */,
 				015AB0812ABDD0CE00783BE9 /* AnimationOverView.swift */,
 				015E08A42AEFB8E0000DB9EB /* AnimatingCircleView.swift */,
@@ -223,7 +220,6 @@
 				015E08A52AEFB8E0000DB9EB /* AnimatingCircleView.swift in Sources */,
 				015AB09A2ADD6D5400783BE9 /* MailComposeView.swift in Sources */,
 				0144DE612AEAC1BF0083CFFA /* GameSummaryView.swift in Sources */,
-				015AB0922ACF300A00783BE9 /* RecordingTouchView.swift in Sources */,
 				0144DE5D2AEA9D3A0083CFFA /* ExplanationView.swift in Sources */,
 				015AB0842ABDD0FE00783BE9 /* TestTrack.swift in Sources */,
 				015E08A32AEE9862000DB9EB /* GenderPicker.swift in Sources */,

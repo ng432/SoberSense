@@ -1,5 +1,14 @@
 
+# %%
+
 import numpy as np
+
+""" 
+Functions written for Bezier interpolation of animation path of circle.
+This is possible as the circle is animated with a Bezier time path with known control points.
+For a Bezier timingCurve, the x axis represents progression of time (from 0 to 1) and the y represents progression in space (from 0 to 1).
+"""
+
 
 # Bezier calculation for single parameter values and control points
 def BezierSingleCalculation(t, p0, p1, p2, p3):
@@ -31,9 +40,10 @@ def BezierCoordInterpolation(current_coord, next_coord, progress_values):
 
 
 # This interpolates the X, Y and time values of the moving circle during it's animation, given the start and end position, and animation duration
-# This is possible as the circle is animated with a Bezier time path with known control points
 def AnimationPathBezierInterpolation(randomPath, number_of_points, control_points, animationDuration, game_length=1):
     # Number of points, is how many points are interpolated for EACH animation jump, between the start and end coordinate of a given jump
+    # Currently returns interpolation for just duration of animation
+    # Interpolation doesn't account for a static period (~0.4 seconds, or 0.02 in normalised time) between each jumps
 
     # Gives un-scaled values to use for interpolation
     time_values, progress_values = BezierMultCalculation(number_of_points, control_points)
@@ -67,3 +77,23 @@ def AnimationPathBezierInterpolation(randomPath, number_of_points, control_point
         interpolatedPath["time"].extend(interpolated_times)
 
     return interpolatedPath
+
+# finding the parametric t value for a given x value
+# x axis, in the context of a timing path, represents time 
+def findParametricTforX(time, p0, p1, p2, p3, tolerance=1e-5):
+
+    low, high = 0, 1
+
+    while low < high:
+
+        mid = (low + high) / 2
+
+        if abs(BezierSingleCalculation(mid, p0, p1, p2, p3) - time) < tolerance:
+            return mid
+        if BezierSingleCalculation(mid, p0, p1, p2, p3) < time:
+            low = mid
+        else:
+            high = mid
+            
+    return (low + high) / 2
+# %%

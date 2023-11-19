@@ -11,14 +11,71 @@ import torch as t
 from math import sqrt
 from bezier_interpolation import findParametricTforX, BezierSingleCalculation
 
+""" Contains prepatory transform to give data structure of [D, S] 
+ 
+ D (=5): (x1, x2, y1, y2, time), where (x1, y1) is touch data, (x2, y2) is path data 
+ S: Number of samples of touch data. (x2, y2) coordinate of path is interpolated for each time of touch data 
+
+"""
+
 #%%
+
+def randomly_crop(prepped_data, crop_size = 50):
+    """ Returns the data cropped to the size defined by crop_size, with the start index randomly chosen
+        Input shape: (D, N)
+        Output shape: (D, crop_size)  """
+
+    num = t.rand(1).item()
+    num_points = prepped_data.shape[-1]
+
+    if num_points < crop_size:
+        raise ValueError(f"Number of recorded touch points ({num_points}) is less than the cropped frame size ({crop_size}) ")
+
+    start_index = int(num * (num_points - crop_size))
+
+    return prepped_data[..., start_index:start_index + crop_size]
+
+
+
+def randomly_flipx(prepped_data, prob = 0.5):
+    """ Takes prepped data (shape [D, S]) and randomly flips the X values"""
+    num = t.rand(1).item()
+    if num < prob:
+        # selecting x's to change
+        prepped_data[0:2, :] *= -1
+        prepped_data[0:2, :] += 1
+    return prepped_data
+
+
+def randomly_flipy(prepped_data, prob = 0.5):
+    """ Takes prepped data (shape [D, S]) and randomly flips the Y values"""
+    num = t.rand(1).item()
+    if num < prob:
+        # selecting x's to change
+        prepped_data[2:4, :] *= -1
+        prepped_data[2:4, :] += 1
+    return prepped_data
+
+
+def append_distance(prepped_data):
+
+    distance = calculate_cartesian_distance(
+        prepped_data[0], prepped_data[1], prepped_data[2], prepped_data[3])
+
+    distance = distance.unsqueeze(0)
+
+    return t.cat((prepped_data, distance))
+
+
+def calculate_cartesian_distance(x1, x2, y1, y2):    
+    return t.sqrt(t.pow((x1-x2),2) + t.pow((y1-y2),2))
+
 
 def prep_transform(sample_data, device='mps'):
     """
     Prepatory transform for collected data 
-    Returns tensor of shape:  [D, S]
-    D (=5): x and y coordinates for touch and path data, and time stamp 
-    S: Number of samples of touch data. X and y coordinate of circle is interpolated for each time of touch data """
+    Returns tensor of shape:  [D, S] """
+
     
     touch_data = t.tensor(
         [sample_data["touchData"]["X"], sample_data["touchData"]["Y"], sample_data["touchData"]["time"]]
@@ -33,7 +90,7 @@ def prep_transform(sample_data, device='mps'):
     if path_x_and_y.shape[-1] != touch_data.shape[-1]:
         raise ValueError(f"The number of sampled touch points ({path_x_and_y.shape[-1]}) do not match the number of interpolated path points ({path_x_and_y.shape.shape[-1]})")
 
-    sample_tensor =t.zeros((6, path_x_and_y.shape[-1]))
+    sample_tensor =t.zeros((5, path_x_and_y.shape[-1]))
 
     # collecting x values 
     sample_tensor[0] = touch_data[0]
@@ -43,12 +100,8 @@ def prep_transform(sample_data, device='mps'):
     sample_tensor[2] = touch_data[1]
     sample_tensor[3] = path_x_and_y[1]
 
-    # calculating distance
-    sample_tensor[4] = calculate_cartesian_distance(
-        sample_tensor[0], sample_tensor[1], sample_tensor[2], sample_tensor[3])
-
     # collecting time
-    sample_tensor[5] = touch_data[2]
+    sample_tensor[4] = touch_data[2]
 
     # MPS requires float32
     if device == "mps":
@@ -58,8 +111,6 @@ def prep_transform(sample_data, device='mps'):
 
     return sample_tensor
 
-def calculate_cartesian_distance(x1, x2, y1, y2):    
-    return t.sqrt(t.pow((x1-x2),2) + t.pow((y1-y2),2))
 
 def bezier_interp_timetospace(touch_times, path_data, control_points, animation_duration, game_length):
     """ 
@@ -113,7 +164,6 @@ def bezier_interp_timetospace(touch_times, path_data, control_points, animation_
             # animation has ended, so coordinate is the end point of that animation
             interp_x[i] = path_data[0, path_index + 1]
             interp_y[i] = path_data[1, path_index + 1]
-
 
     return t.stack((interp_x, interp_y))
 

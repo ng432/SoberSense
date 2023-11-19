@@ -47,7 +47,7 @@ struct AnimationOverView: View {
     
     // Defining variables for Bezier curve of animation
     let controlPoints: [Double] = [0.42, 0.0, 0.58, 1.0]
-    let animationDuration: TimeInterval = 0.40
+    let animationDuration: TimeInterval = 0.4
     
     // List of coordinates defining random path
     let coordinates: [coordinateDimScale]
@@ -139,10 +139,11 @@ struct AnimationOverView: View {
                 
                 withAnimation (.timingCurve(controlPoints[0], controlPoints[1], controlPoints[2], controlPoints[3], duration: animationDuration))
                     {
-                        // Recording start time of movement to next coordinate
                         if currentIndex < coordinates.count{
                             var currentCoordinate = coordinates[currentIndex]
+                            // Recording start time of movement to next coordinate
                             currentCoordinate.time = Double(CACurrentMediaTime())
+                            
                             pathRecord.append(currentCoordinate)
             
                         }
@@ -152,6 +153,7 @@ struct AnimationOverView: View {
                 }
             }
         
+            // to recognise touch for recording
             .simultaneousGesture(DragGesture(coordinateSpace: .local)
                 .onChanged { value in
                     if animationHasStarted {

@@ -1,4 +1,10 @@
 
+# Ignoring runs and logs from pytorch
+runs/
+*.log
+sweep/
+
+
 # Ignoring collected data
 *data/
 

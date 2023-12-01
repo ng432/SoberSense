@@ -1,5 +1,5 @@
 
-# %% 
+#%% 
 
 import sys
 import os
@@ -22,35 +22,33 @@ print(f"Using {device} device")
 
 # %%
 
-
-class linearNetwork(nn.Module):
-    def __init__(self, num_features: int, num_points: int) -> None:
+class TransformerRegressor(nn.Module):
+    def __init__(self, n_features, n_heads, n_hidden, n_layers, dropout):
         super().__init__()
 
-        self.flatten = nn.Flatten()
-        self.input_size = num_features * num_points
+        self.encoder = nn.Linear(n_features, n_hidden)
 
-        self.linear_relu_stack = nn.Sequential(
-            nn.Linear(self.input_size, 2048),
-            nn.ReLU(),
-            nn.BatchNorm1d(2048), 
-            nn.Linear(2048, 1024),     
-            nn.ReLU(),
-            nn.BatchNorm1d(1024),  
-            nn.Linear(1024, 256),     
-            nn.ReLU(),
-            nn.BatchNorm1d(256),  
-            nn.Linear(256, 64),     
-            nn.ReLU(),
-            nn.BatchNorm1d(64),  
-            nn.Linear(64, 1) 
+        transformer_layer = nn.TransformerEncoderLayer(
+            d_model=n_hidden, nhead=n_heads, dropout=dropout
         )
+        
+        self.transformer = nn.TransformerEncoder(transformer_layer, num_layers=n_layers)
+        self.decoder = nn.Linear(n_hidden, 1)
 
     def forward(self, x):
-        x = self.flatten(x)
-        y = self.linear_relu_stack(x)
-        return y
-# %%
+
+        # input is of shape [B, num_features, seq_length]
+        # need to rearrange to [B, seq_length, num_features]
+
+        # this will be encoded to [B, seq_length, n_hidden ]
+        x = t.transpose(x, -1, -2)
+        x = self.encoder(x)
+
+        x = self.transformer(x)
+        x = self.decoder(x[-1])
+        return x
+    
+#%%
 
 sample_data_path = os.path.join(parent_dir, 'sample_data')
 
@@ -70,39 +68,46 @@ data_set = SoberSenseDataset(
     label_transform=lambda x: t.tensor(x, dtype=t.float32).to(device)
 )
 
+#%%
+
+data_shape = data_set[0][0].shape
+n_features = data_shape[0]
+
+n_heads = 12
+n_hidden = 128
+n_layers = 6
+dropout = 0.1
+
+model = TransformerRegressor(n_features, n_heads, n_hidden, n_layers, dropout).to(device)
+
 # %%
 
-train_ratio = 0.7
-test_ratio = 1 - train_ratio
 
+train_ratio = 0.6
+test_ratio = 1 - train_ratio
 train_size = int(train_ratio * len(data_set))
 test_size = len(data_set) - train_size
-
 train_dataset, test_dataset = random_split(data_set, [train_size, test_size])
 
-batch_size = 16
+batch_size = 4
 
 train_dataloader = DataLoader(train_dataset, batch_size=batch_size)
 test_dataloader = DataLoader(test_dataset, batch_size=batch_size)
 
-data_shape = data_set[0][0].shape
-
-linear_model = linearNetwork(num_features=data_shape[0], num_points=data_shape[1]).to(device)
-
-learning_rate = 2e-3
-
 loss_fn = nn.MSELoss()
 
-optimizer = t.optim.SGD(linear_model.parameters(), lr=learning_rate)
+learning_rate = 3e-3
+optimizer = t.optim.SGD(model.parameters(), lr=learning_rate)
 
 epochs = 1000
 writer = SummaryWriter()
+
 for i in range(epochs):
 
     print(f"Epoch {i+1}\n-------------------------------")
 
-    train_loss = train_loop(train_dataloader, linear_model, loss_fn, optimizer)
-    test_loss = test_loop(test_dataloader, linear_model, loss_fn)
+    train_loss = train_loop(train_dataloader, model, loss_fn, optimizer)
+    test_loss = test_loop(test_dataloader, model, loss_fn)
 
     writer.add_scalar('Loss/Train', train_loss, i)
     writer.add_scalar('Loss/Validation', test_loss, i)
@@ -112,3 +117,5 @@ writer.flush()
 print("Done!")
 
 
+
+# %%

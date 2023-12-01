@@ -4,7 +4,6 @@ import os
 import torch as t
 from torch.utils.data import DataLoader, random_split
 
-
 # Contains functions for loading data
 
 
@@ -12,6 +11,8 @@ def train_loop(dataloader, model, loss_fn, optimizer):
     size = len(dataloader.dataset)
 
     model.train()
+
+    total_train_loss = 0
 
     for batch, (X, y) in enumerate(dataloader):
         # Creating prediction and loss
@@ -23,9 +24,17 @@ def train_loop(dataloader, model, loss_fn, optimizer):
         optimizer.step()
         optimizer.zero_grad()
 
+        total_train_loss += loss.item()
+
         if batch % 4 == 0:
             loss, current = loss.item(), (batch + 1) * len(X)
             print(f"loss: {loss:>7f}  [{current:>5d}/{size:>5d}]")
+
+    total_train_loss = total_train_loss / len(dataloader)
+
+    return total_train_loss
+
+    
 
 
 def test_loop(dataloader, model, loss_fn):
@@ -41,5 +50,7 @@ def test_loop(dataloader, model, loss_fn):
             test_loss += loss_fn(pred, y).item()
 
     test_loss /= num_batches
-    # correct /= size
+    
     print(f"Test Error: Avg loss: {test_loss:>8f} \n")
+
+    return test_loss 

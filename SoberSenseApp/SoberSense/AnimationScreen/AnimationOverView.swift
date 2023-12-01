@@ -39,27 +39,33 @@ struct AnimationOverView: View {
     let lineThickness: CGFloat = 2
     
     // Variables to define coordinate path creation
-    let duration: Int = 20
-    let jumpTotal: Int = 25
     let minDistance: Float = 0.1
     let extremeCoord: Float = 0.4
-    let jumpFreq: Double
+    
+    // Attempting to define by path
+    let jumpIntervals: [Double]
+    let minInterval: Double = 0.6
+    let maxInterval: Double = 1.1
+    let duration: Int = 20
     
     // Defining variables for Bezier curve of animation
     let controlPoints: [Double] = [0.42, 0.0, 0.58, 1.0]
     let animationDuration: TimeInterval = 0.4
     
+    
     // List of coordinates defining random path
     let coordinates: [coordinateDimScale]
+    @State private var currentJumpIndex = 0
     
     init(gameAttempt: Binding<TestTrack>) {
         
         self._gameAttempt = gameAttempt
         
+        self.jumpIntervals = RandomTimeIntervals(duration: duration, minInterval: minInterval, maxInterval: maxInterval)
+        
         let parameters: ([coordinateDimScale], Float) = RandomPath(
-            duration: duration, jumpTotal: jumpTotal, minDistance: minDistance, extremeCoord: extremeCoord)
+            duration: duration, jumpTotal: jumpIntervals.count - 1, minDistance: minDistance, extremeCoord: extremeCoord)
         self.coordinates = parameters.0
-        self.jumpFreq = Double(parameters.1)
         
         }
     
@@ -68,7 +74,6 @@ struct AnimationOverView: View {
         NavigationStack{
             
             ZStack{
-            
                 // Initial start screen
                 if !animationHasStarted {
                     
@@ -81,14 +86,6 @@ struct AnimationOverView: View {
                 }
                 // Running through animation path
                 else if currentIndex < coordinates.count && animationHasStarted {
-
-                    AnimatingCircleView(
-                                lineThickness: lineThickness,
-                                screenSize: screenSize,
-                                currentIndex: currentIndex,
-                                coordinates: coordinates,
-                                circleAnimatedRadius: circleAnimatedRadius
-                            )
                     
                     // Display circle on touch, and record touch data
                     if let touchPoint = touchPoint {
@@ -107,7 +104,17 @@ struct AnimationOverView: View {
                                     touchData.append(touchPoint)
                                     }
                     }
-                    
+
+                    AnimatingCircleView(
+                                lineThickness: lineThickness,
+                                screenSize: screenSize,
+                                currentIndex: currentIndex,
+                                coordinates: coordinates,
+                                circleAnimatedRadius: circleAnimatedRadius
+                            )
+                    .onAppear{
+                        performNextJump()
+                    }
                 }
                 
                 // Runs once the random path has finished
@@ -123,37 +130,16 @@ struct AnimationOverView: View {
                             gameAttempt.randomPath = pathRecord
                             gameAttempt.controlPoints = controlPoints
                             gameAttempt.animationDuration = animationDuration
-                            gameAttempt.duration = duration
-                            gameAttempt.jumpTotal = jumpTotal
                             gameAttempt.minDistance = minDistance
                             gameAttempt.extremeCoord = extremeCoord
+                            gameAttempt.jumpIntervals = jumpIntervals
                             
                         }
                 }
                 
-            }
-            // Closure to run code on signal from timer
-            .onReceive(timer) { _ in
-    
-                if animationHasStarted {
-                
-                withAnimation (.timingCurve(controlPoints[0], controlPoints[1], controlPoints[2], controlPoints[3], duration: animationDuration))
-                    {
-                        if currentIndex < coordinates.count{
-                            var currentCoordinate = coordinates[currentIndex]
-                            // Recording start time of movement to next coordinate
-                            currentCoordinate.time = Double(CACurrentMediaTime())
-                            
-                            pathRecord.append(currentCoordinate)
-            
-                        }
-                        // Move to the next coordinate in the list
-                        currentIndex = (currentIndex + 1)
-                    }
-                }
             }
         
-            // to recognise touch for recording
+            // necessary to recognise touch for recording
             .simultaneousGesture(DragGesture(coordinateSpace: .local)
                 .onChanged { value in
                     if animationHasStarted {
@@ -168,16 +154,31 @@ struct AnimationOverView: View {
         
         }
         .navigationBarBackButtonHidden(true)
-        
-        .onAppear {
-            // Xcode didn't like initalising timer and gameAttempt together within 'init' (throwing bug)
-            // So instead have initalised timer to defualt freq, then on appear reset timer to correct freq
-        
-            self.timer.upstream.connect().cancel()
-            self.timer = Timer.publish(every: self.jumpFreq, on: .main, in: .common).autoconnect()
-            
-        }
     }
+    
+    // performs and times animation depending on defined intervals
+    private func performNextJump() {
+            if currentJumpIndex < jumpIntervals.count {
+                DispatchQueue.main.asyncAfter(deadline: .now() + jumpIntervals[currentJumpIndex]) {
+                    
+                    withAnimation (.timingCurve(controlPoints[0], controlPoints[1], controlPoints[2], controlPoints[3], duration: animationDuration)) {
+                        
+                        // records starting point for an animation, and time of start
+                        if currentIndex < coordinates.count {
+                            var currentCoordinate = coordinates[currentIndex]
+                            currentCoordinate.time = Double(CACurrentMediaTime())
+                            pathRecord.append(currentCoordinate)
+                            
+                        }
+                        currentIndex = (currentIndex + 1)
+                    }
+                    currentJumpIndex += 1
+                    performNextJump() // Schedule the next jump
+                }
+            }
+        }
+    
+    
 }
 
 struct AnimationView_previews: PreviewProvider

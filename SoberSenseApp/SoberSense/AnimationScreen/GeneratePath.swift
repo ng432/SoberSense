@@ -5,6 +5,8 @@
 //  Created by nick on 22/09/2023.
 //
 
+// Containes functions involved with the creation and timing of the path of the circle
+
 import SwiftUI
 
 struct coordinateDimScale: Codable {
@@ -22,12 +24,10 @@ func RandomScale(SingleDim: Float, minDistance: Float, extremeCoord: Float) -> F
     // First need to check if coordinate is closer to edge than minDistance
     // If it is, need to generate only from one range
     if (SingleDim - minDistance) < -extremeCoord {
-        
         return Float.random(in: (SingleDim + minDistance)...extremeCoord)
         
     }
     else if (Float(SingleDim) + minDistance) > extremeCoord {
-        
         return Float.random(in: -extremeCoord...(SingleDim - minDistance))
         
     }
@@ -77,4 +77,17 @@ func RandomPath(duration: Int, jumpTotal: Int, minDistance: Float, extremeCoord:
     return (path, jumpFreq)
 }
 
+
+func RandomTimeIntervals(duration: Int, minInterval: Double, maxInterval: Double) -> [Double] {
+    var intervals: [Double] = []
+    var totalDuration: Double = 0
+
+    while totalDuration < Double(duration) {
+        let randomInterval = Double.random(in: minInterval...maxInterval)
+        intervals.append(randomInterval)
+        totalDuration += randomInterval
+    }
+
+    return intervals
+}
 

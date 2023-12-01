@@ -35,10 +35,11 @@ struct TestTrack: Identifiable, Codable {
     var animationDuration: TimeInterval
     
     var screenSize: screenDim
-    var duration: Int
-    var jumpTotal: Int
+    
     var minDistance: Float
     var extremeCoord: Float
+    
+    var jumpIntervals: [Double]
     
 
     init() {
@@ -60,10 +61,9 @@ struct TestTrack: Identifiable, Codable {
         self.animationDuration = 0
         self.randomPath = []
         self.screenSize = screenDim(width: Float(UIScreen.main.bounds.size.width), height: Float(UIScreen.main.bounds.size.height))
-        self.duration = 0
-        self.jumpTotal = 0
         self.minDistance = 0
         self.extremeCoord = 0
+        self.jumpIntervals = []
     }
 }
 

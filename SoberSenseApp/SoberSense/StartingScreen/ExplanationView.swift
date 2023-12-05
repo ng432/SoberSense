@@ -10,20 +10,23 @@ import SwiftUI
 
 struct ExplanationView: View {
     var body: some View {
-        Group{
+        VStack{
+            
             Text("This app is designed to collect touch data during a game, in order to train a model which can detect the user's blood alcohol concentration (BAC).")
+            .multilineTextAlignment(.center)
+            .font(.subheadline)
+            
+
             Text("Please enter your details, including an estimate of many units you have drunk, if any.")
+            .multilineTextAlignment(.center)
+            .font(.subheadline)
+            .bold()
             
-            
+            Rectangle()
+                .fill(Color.blue.opacity(0.5))
+                .frame(height: 2)
+
         }
-        .multilineTextAlignment(.center)
-        .frame(maxWidth: 400)
-        .font(.system(size: 16))
-        
-        Rectangle()
-            .fill(Color.blue.opacity(0.5))
-            .frame(height: 2)
-            .frame(maxWidth: 350)
             
     }
 }

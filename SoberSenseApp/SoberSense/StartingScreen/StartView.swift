@@ -33,7 +33,7 @@ struct StartView: View {
                 
                 ExplanationView()
                     .frame(maxWidth: 350)
-                    .padding()
+
                 
                 UnitsPicker(selectedValue: $unitsDrunk)
                     .frame(maxWidth: 240)

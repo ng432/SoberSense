@@ -36,6 +36,15 @@ def randomly_crop(prepped_data, crop_size = 50):
     return prepped_data[..., start_index:start_index + crop_size]
 
 
+def convert_time_to_intervals(prepped_data):
+
+    device = prepped_data.device
+    intervals = t.diff(prepped_data[4,:])
+    prepped_data[4,:] = t.cat((t.tensor([0], device=device), intervals))
+
+    return prepped_data
+
+
 
 def randomly_flipx(prepped_data, prob = 0.5):
     """ Takes prepped data (shape [D, S]) and randomly flips the X values"""

@@ -100,6 +100,8 @@ def append_velocity_and_acceleration(prepped_data, calc_acc=True):
 
     return prepped_data
 
+
+
 def prep_transform(sample_data, device='mps'):
     """
     Prepatory transform for collected data 

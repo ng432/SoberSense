@@ -169,7 +169,8 @@ def bezier_interp_timetospace(touch_times, path_data, control_points, animation_
 
 
 def find_relevant_jump(touch_times, path_times):
-    """ Outputs tensor (shape == touch_times.shape) of relevant indices into path_times for tensor of touch times. Relevant means the animation jump which was occuring at the time of a given touch.  """
+    """ Outputs tensor (shape == touch_times.shape) of relevant indices into path_times for tensor of touch times. 
+    Relevant means the animation jump which was occuring at the time of a given touch.  """
 
     if (touch_times > path_times[-1]).any():
         raise ValueError("There is a touch time which occurs after animation has finished.")

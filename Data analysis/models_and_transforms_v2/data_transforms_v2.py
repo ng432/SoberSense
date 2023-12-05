@@ -71,6 +71,35 @@ def calculate_cartesian_distance(x1, x2, y1, y2):
     return t.sqrt(t.pow((x1-x2),2) + t.pow((y1-y2),2))
 
 
+def append_velocity_and_acceleration(prepped_data, calc_acc=True):
+
+    device = prepped_data.device
+
+    dx = t.diff(prepped_data[0, :])
+    dy = t.diff(prepped_data[2, :])
+    dt = t.diff(prepped_data[4, :])
+
+    velocity = t.sqrt(dx**2 + dy ** 2) / dt
+    velocity = t.cat((t.tensor([0], device=device), velocity))
+
+    prepped_data = t.cat((prepped_data, velocity.unsqueeze(0)))
+
+    if calc_acc:
+
+        dv = t.diff(velocity[1:])
+
+        # taking average of consecutive time differences
+        dt_acceleration = (dt[:-1] + dt[1:]) / 2 
+        
+        acceleration = dv / dt_acceleration
+        acceleration = t.cat((t.tensor([0,0], device=device), acceleration))
+
+        acceleration = acceleration.unsqueeze(0)
+
+        prepped_data = t.cat((prepped_data, acceleration))
+
+    return prepped_data
+
 def prep_transform(sample_data, device='mps'):
     """
     Prepatory transform for collected data 

@@ -4,9 +4,9 @@ runs/
 *.log
 sweep/
 
-
 # Ignoring collected data
 *data/
+*.json
 
 .DS_Store
 

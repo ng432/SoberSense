@@ -2,7 +2,6 @@
 
 #%%
 
-
 import sys
 import os
 from data_transforms_v2 import prep_transform, randomly_flipx, randomly_flipy, append_distance, randomly_crop, convert_time_to_intervals
@@ -11,7 +10,6 @@ import torch as t
 from torch import nn
 from torch.utils.data import DataLoader, random_split
 from torch.utils.tensorboard import SummaryWriter
-from sklearn.metrics import precision_score, recall_score, f1_score
 
 parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 print(parent_dir)
@@ -19,6 +17,7 @@ sys.path.insert(0, parent_dir)
 
 from data_loaders import train_loop, test_loop
 from unpacking_data import SoberSenseDataset
+from evaluation_functions import calc_model_prec_recall_f1
 
 device = "cuda" if t.cuda.is_available() else "mps" if t.backends.mps.is_available() else "cpu"
 print(f"Using {device} device")
@@ -27,7 +26,7 @@ print(f"Using {device} device")
 #%%
 
 class linear_nn_bc(nn.Module):
-    def __init__(self, num_features: int, num_points: int) -> None:
+    def __init__(self, num_features: int, num_points: int, dropout_prob = 0.0) -> None:
         super().__init__()
 
         self.flatten = nn.Flatten()
@@ -36,18 +35,23 @@ class linear_nn_bc(nn.Module):
 
         self.linear_relu_stack = nn.Sequential(
             nn.Linear(self.input_size, 2048),
-            nn.BatchNorm1d(2048), 
+            nn.BatchNorm1d(2048),
             nn.ReLU(),
+            nn.Dropout(dropout_prob),  
             nn.Linear(2048, 1024),
-            nn.BatchNorm1d(1024), 
+            nn.BatchNorm1d(1024),
             nn.ReLU(),
-            nn.Linear(1024, 256),   
-            nn.BatchNorm1d(256),    
+            nn.Dropout(dropout_prob),  
+            nn.Linear(1024, 256),
+            nn.BatchNorm1d(256),
             nn.ReLU(),
-            nn.Linear(256, 64),   
-            nn.BatchNorm1d(64),    
+            nn.Dropout(dropout_prob),  
+            nn.Linear(256, 64),
+            nn.BatchNorm1d(64),
             nn.ReLU(),
-            nn.Linear(64, 1) 
+            nn.Dropout(dropout_prob),  
+            nn.Linear(64, 1),
+            nn.Sigmoid()
         )
 
     def forward(self, x):
@@ -60,15 +64,14 @@ class linear_nn_bc(nn.Module):
 # %%
 
 def augmentation_transform(x):
-    x = randomly_crop(x, crop_size=250)
+    x = randomly_crop(x, crop_size=200)
     x = append_distance(x)
     x = randomly_flipx(x)
     x = randomly_flipy(x)
     x = convert_time_to_intervals(x)
     return x
 
-def binary_label_transform(label, threshold = 0.08):
-
+def binary_label_transform(label, threshold = 0.07):
     # 1 represents 
     if label > threshold:
         label = t.tensor([1], dtype=t.float32).to(device)
@@ -77,17 +80,20 @@ def binary_label_transform(label, threshold = 0.08):
 
     return label
 
-sample_data_path = os.path.join(parent_dir, 'pilot_data')
+data_path = os.path.join(parent_dir, 'pilot_data')
 
 data_set = SoberSenseDataset(
-    sample_data_path,
+    data_path,
+    label_name='BAC', 
     prep_transform=prep_transform,
     augmentation_transform= augmentation_transform,
-    label_transform= binary_label_transform
+    label_transform=binary_label_transform,
+    length_threshold=300
 )
 
+
 #%%
-train_ratio = 0.6
+train_ratio = 0.75
 test_ratio = 1 - train_ratio
 
 train_size = int(train_ratio * len(data_set))
@@ -96,15 +102,26 @@ test_size = len(data_set) - train_size
 train_dataset, test_dataset = random_split(data_set, [train_size, test_size])
 
 test_labels = []
-over_bac_threshold_count = 0 
+test_over_threshold_count = 0 
 
 for i in range(len(test_dataset)):
     label = test_dataset[i][1].item()
     test_labels.append(label)
-    over_bac_threshold_count += label
+    test_over_threshold_count += label
 
-print("Test labels, Over bac threshold count:", over_bac_threshold_count)
-print("Test labels, under bac threshold count",len(test_labels) - over_bac_threshold_count)
+train_labels = []
+train_over_threshold_count = 0 
+
+for i in range(len(train_dataset)):
+    label = train_dataset[i][1].item()
+    train_labels.append(label)
+    train_over_threshold_count += label
+
+print("Test labels, Over bac threshold count:", test_over_threshold_count)
+print("Test labels, under bac threshold count",len(test_labels) - test_over_threshold_count)
+
+print("Train labels, Over bac threshold count:", train_over_threshold_count)
+print("Train labels, under bac threshold count",len(train_labels) - train_over_threshold_count)
 
 #%%
 
@@ -116,12 +133,14 @@ data_shape = data_set[0][0].shape
 
 linear_model = linear_nn_bc(num_features=data_shape[0], num_points=data_shape[1]).to(device)
 loss_fn = nn.BCELoss()
-learning_rate = 3e-4
+learning_rate = 5e-4
 optimizer = t.optim.SGD(linear_model.parameters(), lr=learning_rate)
 
-epochs = 2000
+epochs = 4000
 writer = SummaryWriter()
-for i in range(epochs):
+
+#%%
+for i in range(16000, 32000):
 
     print(f"Epoch {i+1}\n-------------------------------")
 
@@ -131,44 +150,14 @@ for i in range(epochs):
     writer.add_scalar('Loss/Train', train_loss, i)
     writer.add_scalar('Loss/Validation', test_loss, i)
 
-
 writer.flush()
 print("Done!")
 
 
 # %%
 
-import numpy as np
-from sklearn.metrics import precision_score, recall_score, f1_score
+precision, recall, f1 = calc_model_prec_recall_f1(linear_model, train_dataloader, num_rep= 1, threshold=0.5)
 
-def evaluate_model(model, dataloader, threshold = 0.6):
-    model.eval()  # Set the model to evaluation mode
-    true_labels = []
-    predictions = []
-
-    with t.no_grad():  
-        for _, (X, y) in enumerate(dataloader):
-            X, y = X.to(device), y.to(device)
-            outputs = model(X)
-            predicted_probs = outputs.squeeze().cpu() 
-            predicted_labels = (predicted_probs >= threshold).float() 
-            true_labels.append(y.cpu())
-            predictions.append(predicted_labels)
-
-    true_labels = np.concatenate(true_labels)
-    predictions = np.concatenate(predictions)
-
-    print([predictions[i] for i in range(len(true_labels))])
-    print([true_labels[i][0] for i in range(len(true_labels))])
-
-    precision = precision_score(true_labels, predictions)
-    recall = recall_score(true_labels, predictions)
-    f1 = f1_score(true_labels, predictions)
-
-    return precision, recall, f1
-
-# Evaluate the model
-precision, recall, f1 = evaluate_model(linear_model, test_dataloader)
 print(f"Precision: {precision}\nRecall: {recall}\nF1 Score: {f1}")
 
 

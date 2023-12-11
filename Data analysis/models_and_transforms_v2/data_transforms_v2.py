@@ -20,6 +20,15 @@ from bezier_interpolation import findParametricTforX, BezierSingleCalculation
 
 #%%
 
+def binary_label_transform(label, threshold = 0.07, device = 'mps'):
+    # 1 represents 
+    if label > threshold:
+        label = t.tensor([1], dtype=t.float32).to(device)
+    else:
+        label = t.tensor([0], dtype=t.float32).to(device)
+
+    return label
+
 def randomly_crop(prepped_data, crop_size = 50):
     """ Returns the data cropped to the size defined by crop_size, with the start index randomly chosen
         Input shape: (D, N)

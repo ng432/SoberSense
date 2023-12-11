@@ -2,7 +2,7 @@
 
 import sys
 import os
-from data_transforms_v2 import prep_transform, randomly_flipx, randomly_flipy, append_distance, randomly_crop, convert_time_to_intervals
+from data_transforms_v2 import prep_transform, randomly_flipx, randomly_flipy, append_distance, randomly_crop, convert_time_to_intervals, binary_label_transform
 import torch as t
 
 from torch import nn
@@ -41,7 +41,6 @@ class LSTM_binary_classifier(nn.Module):
         lstm_out, _ = self.lstm(x)
         lstm_out = lstm_out[:, -1, :]
         output = self.fc(lstm_out)
-        output = self.sigmoid(output)
         return output
     
 #%%
@@ -53,23 +52,14 @@ def augmentation_transform(x):
     x = convert_time_to_intervals(x)
     return x
 
-def binary_label_transform(label, threshold = 0.07):
-    # 1 represents 
-    if label > threshold:
-        label = t.tensor([1], dtype=t.float32).to(device)
-    else:
-        label = t.tensor([0], dtype=t.float32).to(device)
-
-    return label
 
 data_path = os.path.join(parent_dir, 'pilot_data')
 
 data_set = SoberSenseDataset(
     data_path,
-    label_name='BAC', 
     prep_transform=prep_transform,
     augmentation_transform= augmentation_transform,
-    label_transform=binary_label_transform,
+    label_transform= lambda x: binary_label_transform(x, threshold= 5),
     length_threshold=300
 )
 
@@ -120,7 +110,7 @@ hidden_size = 512
 num_layers = 2
 
 lstm_model = LSTM_binary_classifier(num_features=data_shape[0], hidden_size=hidden_size, num_layers=num_layers).to(device)
-loss_fn = nn.BCELoss()
+loss_fn = nn.BCEWithLogitsLoss()
 learning_rate = 5e-4
 optimizer = t.optim.SGD(lstm_model.parameters(), lr=learning_rate)
 

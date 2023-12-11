@@ -4,7 +4,7 @@
 
 import sys
 import os
-from data_transforms_v2 import prep_transform, randomly_flipx, randomly_flipy, append_distance, randomly_crop, convert_time_to_intervals
+from data_transforms_v2 import prep_transform, randomly_flipx, randomly_flipy, append_distance, randomly_crop, convert_time_to_intervals, binary_label_transform
 import torch as t
 
 from torch import nn
@@ -31,7 +31,6 @@ class linear_nn_bc(nn.Module):
 
         self.flatten = nn.Flatten()
         self.input_size = num_features * num_points
-        self.sigmoid = nn.Sigmoid()
 
         self.linear_relu_stack = nn.Sequential(
             nn.Linear(self.input_size, 2048),
@@ -50,44 +49,34 @@ class linear_nn_bc(nn.Module):
             nn.BatchNorm1d(64),
             nn.ReLU(),
             nn.Dropout(dropout_prob),  
-            nn.Linear(64, 1),
-            nn.Sigmoid()
+            nn.Linear(64, 1)
         )
 
     def forward(self, x):
         x = self.flatten(x)
         x = self.linear_relu_stack(x)
-        y = self.sigmoid(x)
-        return y
+        return x
     
 
 # %%
 
 def augmentation_transform(x):
-    x = randomly_crop(x, crop_size=200)
+    x = randomly_crop(x, crop_size=300)
     x = append_distance(x)
     x = randomly_flipx(x)
     x = randomly_flipy(x)
     x = convert_time_to_intervals(x)
     return x
 
-def binary_label_transform(label, threshold = 0.07):
-    # 1 represents 
-    if label > threshold:
-        label = t.tensor([1], dtype=t.float32).to(device)
-    else:
-        label = t.tensor([0], dtype=t.float32).to(device)
-
-    return label
 
 data_path = os.path.join(parent_dir, 'pilot_data')
 
 data_set = SoberSenseDataset(
     data_path,
-    label_name='BAC', 
+    label_name='unitsDrunk', 
     prep_transform=prep_transform,
     augmentation_transform= augmentation_transform,
-    label_transform=binary_label_transform,
+    label_transform= lambda x: binary_label_transform(x, threshold = 5),
     length_threshold=300
 )
 
@@ -131,16 +120,16 @@ test_dataloader = DataLoader(test_dataset, batch_size=batch_size)
 
 data_shape = data_set[0][0].shape
 
-linear_model = linear_nn_bc(num_features=data_shape[0], num_points=data_shape[1]).to(device)
-loss_fn = nn.BCELoss()
-learning_rate = 5e-4
+linear_model = linear_nn_bc(num_features=data_shape[0], num_points=data_shape[1], dropout_prob=0.1).to(device)
+loss_fn = nn.BCEWithLogitsLoss()
+learning_rate = 1e-4
 optimizer = t.optim.SGD(linear_model.parameters(), lr=learning_rate)
 
-epochs = 4000
+epochs = 2000
 writer = SummaryWriter()
 
 #%%
-for i in range(16000, 32000):
+for i in range(epochs):
 
     print(f"Epoch {i+1}\n-------------------------------")
 
@@ -156,7 +145,7 @@ print("Done!")
 
 # %%
 
-precision, recall, f1 = calc_model_prec_recall_f1(linear_model, train_dataloader, num_rep= 1, threshold=0.5)
+precision, recall, f1 = calc_model_prec_recall_f1(linear_model, train_dataloader, threshold=0.5)
 
 print(f"Precision: {precision}\nRecall: {recall}\nF1 Score: {f1}")
 

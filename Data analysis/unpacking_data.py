@@ -6,12 +6,11 @@ import json
 import os
 from torch.utils.data import Dataset
 
-
 class SoberSenseDataset(Dataset):
     
     def __init__(
         self, data_folder, label_name='unitsDrunk', device="mps", screenScaling = 926, length_threshold = 0,
-        prep_transform=None, augmentation_transform=None, label_transform=None):
+        prep_transform=None, augmentation_transform=None, label_transform=None, analysing_data = False):
         # screen scaling is hard coded at 926
         # this represents the largest height possible of an iPhone (model iPhone 14 Pro)
         # ths value is in 'points', a measurement defined by Swift/Apple as to have consistent measurements across iPhone models
@@ -26,6 +25,7 @@ class SoberSenseDataset(Dataset):
         self.augmentation_transform = augmentation_transform
         self.label_transform = label_transform
         self.samples = []  # A list to store the data examples and labels
+        self.analysing_data = analysing_data
         
         # Iterate through JSON files in the data folder
         for filename in os.listdir(data_folder):
@@ -78,7 +78,8 @@ class SoberSenseDataset(Dataset):
                                 "screenHeight": sample_data["screenSize"]["height"],
                                 "controlPoints": sample_data["controlPoints"],
                                 "animationDuration": sample_data["animationDuration"],
-                                "gameLength": game_length}
+                                "gameLength": game_length,
+                                "id": sample_data["id"]}
                         
                         self.samples.append((sample, label))
 
@@ -106,7 +107,12 @@ class SoberSenseDataset(Dataset):
             label = self.label_transform(label)
             label = label.to(self.device)
 
-        return sample_data, label
+
+        if self.analysing_data: # for when carrying out statistics to analyse data
+            return sample_data, label, self.samples[idx][0], self.samples[idx][0]['id']
+        else:
+            return sample_data, label
+
 
 
 def UnpackTouchData(data, start_time, scale=None, game_length=1):

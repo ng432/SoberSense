@@ -67,7 +67,7 @@ def prep_transform(unprocessed_data):
     x = append_RT(x, unprocessed_data)
     return x
 
-def augmentation_transform(x, unprocessed_data):
+def augmentation_transform(x):
     x = randomly_crop(x, crop_size=300)
     x = convert_time_to_intervals(x) # ideally would be in prep transform, but has to be after cropping
     x = randomly_flipx(x)
@@ -112,26 +112,29 @@ for i in range(len(train_dataset)):
     train_labels.append(label)
     train_over_threshold_count += label
 
+print("-------------------------------")
 print("Test labels, Over bac threshold count:", test_over_threshold_count)
 print("Test labels, under bac threshold count",len(test_labels) - test_over_threshold_count)
-
+print("-------------------------------")
 print("Train labels, Over bac threshold count:", train_over_threshold_count)
 print("Train labels, under bac threshold count",len(train_labels) - train_over_threshold_count)
+print("-------------------------------")
 
 #%%
 
-batch_size = 16
+batch_size = 8
 train_dataloader = DataLoader(train_dataset, batch_size=batch_size)
 test_dataloader = DataLoader(test_dataset, batch_size=batch_size)
 
 data_shape = data_set[0][0].shape
 
-linear_model = linear_nn_bc(num_features=data_shape[0], num_points=data_shape[1], dropout_prob=0.1).to(device)
+linear_model = linear_nn_bc(num_features=data_shape[0], num_points=data_shape[1], dropout_prob=0).to(device)
 loss_fn = nn.BCEWithLogitsLoss()
 learning_rate = 1e-4
-optimizer = t.optim.SGD(linear_model.parameters(), lr=learning_rate)
+#optimizer = t.optim.SGD(linear_model.parameters(), lr=learning_rate)
+optimizer = t.optim.Adam(linear_model.parameters(), lr=learning_rate)
 
-epochs = 2000
+epochs = 3000
 writer = SummaryWriter()
 
 #%%

@@ -69,7 +69,7 @@ def randomly_flipy(prepped_data, prob = 0.5):
     """ Takes prepped data (shape [D, S]) and randomly flips the Y values"""
     num = t.rand(1).item()
     if num < prob:
-        # selecting x's to change
+        # selecting y's to change
         prepped_data[2:4, :] *= -1
         prepped_data[2:4, :] += 1
     return prepped_data
@@ -147,13 +147,14 @@ def append_RT(prepped_data, sample_data, min_RT = 0.01):
             RT = (windowed_data[0, index_for_peak_distance] - path_times[i]).item()
 
             RT_tensor[0, time_mask] = RT
+            RT_list.append(RT)
 
     # if (RT_tensor == -1).any():
     #     raise ValueError("RT tensor contains -1. Some touch data is likely outside the timings of the path data.")
 
     prepped_data = t.cat((prepped_data, RT_tensor))
 
-    return prepped_data
+    return prepped_data, RT_list
 
 
 
@@ -238,7 +239,7 @@ def bezier_interp_timetospace(touch_times, path_data, control_points, animation_
             # animation is ongoing 
 
             progress_into_animation = times_after_animation_start[i] / scaled_animation_duration
-            parametric_t = findParametricTforX(progress_into_animation, 0, control_points[0], control_points[2], 1, tolerance=1e-5)
+            parametric_t = findParametricTforX(progress_into_animation, 0, control_points[0], control_points[2], 1, tolerance=1e-10)
 
             # value from 0 to 1, representing how far along animation is in space
             animation_progression = BezierSingleCalculation(parametric_t, 0, control_points[1], control_points[3], 1)

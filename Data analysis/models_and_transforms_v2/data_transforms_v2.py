@@ -21,7 +21,7 @@ from bezier_interpolation import findParametricTforX, BezierSingleCalculation
 #%%
 
 def binary_label_transform(label, threshold = 0.07, device = 'mps'):
-    # 1 represents 
+
     if label > threshold:
         label = t.tensor([1], dtype=t.float32).to(device)
     else:
@@ -118,9 +118,46 @@ def append_velocity_and_acceleration(prepped_data, calc_acc=True):
 
     return prepped_data
 
+def append_RT(prepped_data, sample_data, min_RT = 0.01):
+    # Requires distance to have already been appended
+
+    # easy check to see if distance has been appended
+    if prepped_data.shape[0] != 6:
+        raise ValueError(f"This function needs to be applied after the distance calculation, which would imply first dimension size of 6. The actual size is {prepped_data.shape[0]}")
+
+    path_times = sample_data["randomPath"]["time"]
+    RT_list = []
+
+    device = prepped_data.device
+
+    # filled with dummy values 
+    RT_tensor = t.full((1, prepped_data.shape[-1]), 0).to(device)
+    
+    # initial naive solution is just to pluck the peak 
+    for i in range(len(path_times)-1):
+    
+        tmin = path_times[i] + min_RT 
+        tmax = path_times[i+1]
+
+        time_mask = (prepped_data[4] >= tmin) & (prepped_data[4] <= tmax)
+        windowed_data = prepped_data[4:, time_mask]
+
+        if windowed_data.shape[-1] != 0:
+            index_for_peak_distance = t.argmax(windowed_data[1])
+            RT = (windowed_data[0, index_for_peak_distance] - path_times[i]).item()
+
+            RT_tensor[0, time_mask] = RT
+
+    # if (RT_tensor == -1).any():
+    #     raise ValueError("RT tensor contains -1. Some touch data is likely outside the timings of the path data.")
+
+    prepped_data = t.cat((prepped_data, RT_tensor))
+
+    return prepped_data
 
 
-def prep_transform(sample_data, device='mps'):
+
+def processing_transform(sample_data, device='mps', remove_early_times = True):
     """
     Prepatory transform for collected data 
     Returns tensor of shape:  [D, S] """
@@ -155,7 +192,12 @@ def prep_transform(sample_data, device='mps'):
     # MPS requires float32
     if device == "mps":
         sample_tensor = sample_tensor.to(t.float32)
-        
+
+    # removing times before the circle started moving (with time value of < 0)
+    if remove_early_times:
+        time_mask = sample_tensor[4, :] > 0
+        sample_tensor = sample_tensor[:, time_mask]
+
     sample_tensor = sample_tensor.to(device)
 
     return sample_tensor

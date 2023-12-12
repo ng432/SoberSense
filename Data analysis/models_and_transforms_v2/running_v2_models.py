@@ -1,5 +1,7 @@
 
 
+
+
 #%%
 
 import sys
@@ -23,48 +25,13 @@ device = "cuda" if t.cuda.is_available() else "mps" if t.backends.mps.is_availab
 print(f"Using {device} device")
 
 
-#%%
-
-class linear_nn_bc(nn.Module):
-    def __init__(self, num_features: int, num_points: int, dropout_prob = 0.0) -> None:
-        super().__init__()
-
-        self.flatten = nn.Flatten()
-        self.input_size = num_features * num_points
-
-        self.linear_relu_stack = nn.Sequential(
-            nn.Linear(self.input_size, 2048),
-            nn.BatchNorm1d(2048),
-            nn.ReLU(),
-            nn.Dropout(dropout_prob),  
-            nn.Linear(2048, 1024),
-            nn.BatchNorm1d(1024),
-            nn.ReLU(),
-            nn.Dropout(dropout_prob),  
-            nn.Linear(1024, 256),
-            nn.BatchNorm1d(256),
-            nn.ReLU(),
-            nn.Dropout(dropout_prob),  
-            nn.Linear(256, 64),
-            nn.BatchNorm1d(64),
-            nn.ReLU(),
-            nn.Dropout(dropout_prob),  
-            nn.Linear(64, 1)
-        )
-
-    def forward(self, x):
-        x = self.flatten(x)
-        x = self.linear_relu_stack(x)
-        return x
-    
-
 # %%
 
 # prep transform is cached
 def prep_transform(unprocessed_data):
     x = processing_transform(unprocessed_data)
     x = append_distance(x)
-    x = append_RT(x, unprocessed_data)
+    #x, _ = append_RT(x, unprocessed_data)
     return x
 
 def augmentation_transform(x):
@@ -82,13 +49,13 @@ data_set = SoberSenseDataset(
     label_name='unitsDrunk', 
     prep_transform=prep_transform,
     augmentation_transform= augmentation_transform,
-    label_transform= lambda x: binary_label_transform(x, threshold = 5.1),
+    label_transform= lambda x: binary_label_transform(x, threshold = 6),
     length_threshold=300
 )
 
 
 #%%
-train_ratio = 0.75
+train_ratio = 0.7
 test_ratio = 1 - train_ratio
 
 train_size = int(train_ratio * len(data_set))
@@ -122,15 +89,17 @@ print("-------------------------------")
 
 #%%
 
-batch_size = 8
+batch_size = 16
 train_dataloader = DataLoader(train_dataset, batch_size=batch_size)
 test_dataloader = DataLoader(test_dataset, batch_size=batch_size)
 
 data_shape = data_set[0][0].shape
 
-linear_model = linear_nn_bc(num_features=data_shape[0], num_points=data_shape[1], dropout_prob=0).to(device)
+from nn_models_v2 import linear_nn_bc
+
+linear_model = linear_nn_bc(num_features=data_shape[0], num_points=data_shape[1], dropout_prob=0.1).to(device)
 loss_fn = nn.BCEWithLogitsLoss()
-learning_rate = 1e-4
+learning_rate = 5e-5
 #optimizer = t.optim.SGD(linear_model.parameters(), lr=learning_rate)
 optimizer = t.optim.Adam(linear_model.parameters(), lr=learning_rate)
 
@@ -138,7 +107,7 @@ epochs = 3000
 writer = SummaryWriter()
 
 #%%
-for i in range(epochs):
+for i in range(3000, 6000):
 
     print(f"Epoch {i+1}\n-------------------------------")
 

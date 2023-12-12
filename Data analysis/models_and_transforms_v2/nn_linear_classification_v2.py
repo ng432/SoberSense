@@ -4,7 +4,7 @@
 
 import sys
 import os
-from data_transforms_v2 import prep_transform, randomly_flipx, randomly_flipy, append_distance, randomly_crop, convert_time_to_intervals, binary_label_transform
+from data_transforms_v2 import processing_transform, randomly_flipx, randomly_flipy, append_distance, randomly_crop, convert_time_to_intervals, binary_label_transform, append_RT
 import torch as t
 
 from torch import nn
@@ -60,12 +60,18 @@ class linear_nn_bc(nn.Module):
 
 # %%
 
-def augmentation_transform(x):
-    x = randomly_crop(x, crop_size=300)
+# prep transform is cached
+def prep_transform(unprocessed_data):
+    x = processing_transform(unprocessed_data)
     x = append_distance(x)
+    x = append_RT(x, unprocessed_data)
+    return x
+
+def augmentation_transform(x, unprocessed_data):
+    x = randomly_crop(x, crop_size=300)
+    x = convert_time_to_intervals(x) # ideally would be in prep transform, but has to be after cropping
     x = randomly_flipx(x)
     x = randomly_flipy(x)
-    x = convert_time_to_intervals(x)
     return x
 
 
@@ -76,7 +82,7 @@ data_set = SoberSenseDataset(
     label_name='unitsDrunk', 
     prep_transform=prep_transform,
     augmentation_transform= augmentation_transform,
-    label_transform= lambda x: binary_label_transform(x, threshold = 5),
+    label_transform= lambda x: binary_label_transform(x, threshold = 5.1),
     length_threshold=300
 )
 

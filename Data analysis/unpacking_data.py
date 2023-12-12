@@ -9,11 +9,12 @@ from torch.utils.data import Dataset
 class SoberSenseDataset(Dataset):
     
     def __init__(
-        self, data_folder, label_name='unitsDrunk', device="mps", screenScaling = 926, length_threshold = 0,
+        self, data_folder, label_name='unitsDrunk', device="mps", screenScaling = 926, length_threshold = 0, maxGameLength = 25,
         prep_transform=None, augmentation_transform=None, label_transform=None, analysing_data = False):
         # screen scaling is hard coded at 926
         # this represents the largest height possible of an iPhone (model iPhone 14 Pro)
         # ths value is in 'points', a measurement defined by Swift/Apple as to have consistent measurements across iPhone models
+        # maxGameLength (used for scaling) hardcoded at 25.
 
         if augmentation_transform is not None and prep_transform is None:
             raise ValueError("Augmentation transform provided without a preparatory transform.")
@@ -37,14 +38,6 @@ class SoberSenseDataset(Dataset):
                     # poorly recorded data can have limited touch points
                     # threshold used to ignore samples with too few touch points recorded
                     if len(sample_data["touchData"]) > length_threshold:
-        
-                        # duration used to scale times
-                        if "duration" in sample_data:
-                            # time, in seconds, that the game runs over
-                            game_length = sample_data["duration"]
-                        # for collected data where data doesn't have explicit 'duration'
-                        else:
-                            game_length = 20
 
                         # note using the same scaling for x and y values as to have only one scale for distance
                         screen_dim = {
@@ -57,7 +50,7 @@ class SoberSenseDataset(Dataset):
                             sample_data["touchData"],
                             start_time = sample_data["randomPath"][0]["time"],
                             scale = screenScaling,
-                            game_length = game_length,
+                            game_length = maxGameLength,
                         )
 
                         # Random path data is recorded as scaled, but from -0.5 to 0.5
@@ -68,7 +61,7 @@ class SoberSenseDataset(Dataset):
                             screen_dim = screen_dim,
                             start_time = sample_data["randomPath"][0]["time"],
                             shift=0.5,
-                            game_length=game_length,
+                            game_length=maxGameLength,
                         )
 
                         label = sample_data[label_name]
@@ -78,7 +71,7 @@ class SoberSenseDataset(Dataset):
                                 "screenHeight": sample_data["screenSize"]["height"],
                                 "controlPoints": sample_data["controlPoints"],
                                 "animationDuration": sample_data["animationDuration"],
-                                "gameLength": game_length,
+                                "gameLength": maxGameLength,
                                 "id": sample_data["id"]}
                         
                         self.samples.append((sample, label))
@@ -112,8 +105,7 @@ class SoberSenseDataset(Dataset):
             return sample_data, label, self.samples[idx][0], self.samples[idx][0]['id']
         else:
             return sample_data, label
-
-
+        
 
 def UnpackTouchData(data, start_time, scale=None, game_length=1):
 
@@ -149,4 +141,4 @@ def UnpackPathData(data , start_time, scale=None, screen_dim=None, shift=0, game
 # %%
 
 
-# %%
+

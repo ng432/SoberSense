@@ -89,7 +89,8 @@ def calculate_cartesian_distance(x1, x2, y1, y2):
     return t.sqrt(t.pow((x1-x2),2) + t.pow((y1-y2),2))
 
 
-def append_velocity_and_acceleration(prepped_data, calc_acc=True):
+def append_velocity_and_acceleration(prepped_data, calc_acc=True, norm_dic=None):
+    # norm dic is a dictionary containing max and min clipping values to normalise acc / velocity
 
     device = prepped_data.device
 
@@ -103,7 +104,6 @@ def append_velocity_and_acceleration(prepped_data, calc_acc=True):
     prepped_data = t.cat((prepped_data, velocity.unsqueeze(0)))
 
     if calc_acc:
-
         dv = t.diff(velocity[1:])
 
         # taking average of consecutive time differences
@@ -116,10 +116,21 @@ def append_velocity_and_acceleration(prepped_data, calc_acc=True):
 
         prepped_data = t.cat((prepped_data, acceleration))
 
+    if norm_dic:
+        # velocity
+        prepped_data[-2,:] = t.clamp(prepped_data[-2,:], min=norm_dic['min_cv'], max=norm_dic['max_cv'])
+        prepped_data[-2,:] = (prepped_data[-2,:] - norm_dic["min_cv"]) / (norm_dic["max_cv"] - norm_dic["min_cv"])
+
+        # acc
+        prepped_data[-1,:] = t.clamp(prepped_data[-1,:], min=norm_dic['min_ca'], max=norm_dic['max_ca'])
+        prepped_data[-1,:] = (prepped_data[-1,:] - norm_dic["min_ca"]) / (norm_dic["max_ca"] - norm_dic["min_ca"])
+        
     return prepped_data
 
-def append_RT(prepped_data, sample_data, min_RT = 0.01):
+def append_RT(prepped_data, sample_data, min_RT = 0.01, max_RT = 0.044, normalising=True):
     # Requires distance to have already been appended
+    # max_RT of 0.044 assumes the time has already been normalised with a scale of 1/25, and the max window between animation time jumps is 1.1 seconds
+    # 1.1/25 = 0.044
 
     # easy check to see if distance has been appended
     if prepped_data.shape[0] != 6:
@@ -130,9 +141,11 @@ def append_RT(prepped_data, sample_data, min_RT = 0.01):
 
     device = prepped_data.device
 
-    # filled with dummy values 
-    RT_tensor = t.full((1, prepped_data.shape[-1]), 0).to(device)
-    
+    zeros = t.zeros(1, prepped_data.shape[-1], device=prepped_data.device)
+
+    # Concatenate along the first dimension (rows)
+    prepped_data = t.cat((prepped_data, zeros), dim=0)
+
     # initial naive solution is just to pluck the peak 
     for i in range(len(path_times)-1):
     
@@ -141,18 +154,29 @@ def append_RT(prepped_data, sample_data, min_RT = 0.01):
 
         time_mask = (prepped_data[4] >= tmin) & (prepped_data[4] <= tmax)
         windowed_data = prepped_data[4:, time_mask]
+        
+        RT_list_for_tensor = []
 
         if windowed_data.shape[-1] != 0:
             index_for_peak_distance = t.argmax(windowed_data[1])
             RT = (windowed_data[0, index_for_peak_distance] - path_times[i]).item()
 
-            RT_tensor[0, time_mask] = RT
+            RT_list_for_tensor.extend([RT] * windowed_data.shape[-1])
+
+            prepped_data[-1, time_mask] = RT
+
             RT_list.append(RT)
 
-    # if (RT_tensor == -1).any():
-    #     raise ValueError("RT tensor contains -1. Some touch data is likely outside the timings of the path data.")
+    if prepped_data[-1].max() > max_RT:
+        raise ValueError(f"The largest reaction time calculated was {prepped_data[-1].max():.4f}, while the max reaction time should be {max_RT}")
 
-    prepped_data = t.cat((prepped_data, RT_tensor))
+    if normalising:
+        non_zero_mask = prepped_data[-1]!=0
+        prepped_data[-1, non_zero_mask] = (prepped_data[-1,non_zero_mask] - min_RT) / (max_RT-min_RT)
+
+    if prepped_data[-1].min() < 0:
+        raise ValueError("There is negative RT; check normalisation and ")
+         
 
     return prepped_data, RT_list
 

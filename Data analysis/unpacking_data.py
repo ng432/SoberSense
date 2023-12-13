@@ -49,6 +49,7 @@ class SoberSenseDataset(Dataset):
                         unpacked_touchData = UnpackTouchData(
                             sample_data["touchData"],
                             start_time = sample_data["randomPath"][0]["time"],
+                            screen_dim=screen_dim,
                             scale = screenScaling,
                             game_length = maxGameLength,
                         )
@@ -107,10 +108,14 @@ class SoberSenseDataset(Dataset):
             return sample_data, label
         
 
-def UnpackTouchData(data, start_time, scale=None, game_length=1):
+def UnpackTouchData(data, start_time, scale=None, game_length=1, screen_dim = None):
 
-    x = [point['xLocation'] / scale for point in data]
-    y = [point['yLocation'] / scale for point in data]
+    # necessary to centre normalisation around 0.5
+    y_shift = (scale - screen_dim['height'])/2
+    x_shift = (scale - screen_dim['width'])/2
+
+    x = [(point['xLocation']+x_shift) / scale for point in data]
+    y = [(point['yLocation']+y_shift) / scale for point in data]
 
     time = [(point["time"] - start_time) / game_length for point in data]
 
@@ -125,8 +130,11 @@ def UnpackPathData(data , start_time, scale=None, screen_dim=None, shift=0, game
     x_factor = screen_dim['width'] / scale
     y_factor = screen_dim['height'] / scale
 
-    x = [(point['xDimScale'] + shift) * x_factor for point in data]
-    y = [(point['yDimScale'] + shift) * y_factor for point in data]
+    centering_yshift = (1-y_factor)/2
+    centering_xshift = (1-x_factor)/2
+
+    x = [(((point['xDimScale'] + shift) * x_factor) + centering_xshift) for point in data]
+    y = [(((point['yDimScale'] + shift) * y_factor) + centering_yshift) for point in data]
 
     time = [(point["time"] - start_time) / game_length for point in data]
 

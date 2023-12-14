@@ -1,8 +1,9 @@
 
-# Ignoring runs and logs from pytorch
+# Ignoring runs, logs and saved models from pytorch
 runs/
 *.log
 sweep/
+*.pth
 
 # Ignoring collected data
 *data/

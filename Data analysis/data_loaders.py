@@ -7,7 +7,7 @@ from torch.utils.data import DataLoader, random_split
 # Contains functions for loading data
 
 
-def train_loop(dataloader, model, loss_fn, optimizer):
+def train_loop(dataloader, model, loss_fn, optimizer, writer, epoch):
     size = len(dataloader.dataset)
 
     model.train()
@@ -24,11 +24,16 @@ def train_loop(dataloader, model, loss_fn, optimizer):
         optimizer.step()
         optimizer.zero_grad()
 
+        for name, param in model.named_parameters():
+            if param.requires_grad and param.grad is not None:
+                writer.add_histogram(f"Gradients/{name}", param.grad, epoch * len(dataloader) + batch)
+
         total_train_loss += loss.item()
 
         if batch % 2 == 0:
             loss, current = loss.item(), (batch + 1) * len(X)
             print(f"loss: {loss:>7f}  [{current:>5d}/{size:>5d}]")
+
 
     total_train_loss = total_train_loss / len(dataloader)
 

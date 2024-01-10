@@ -19,7 +19,7 @@ Currently, the task is framed as a binary classification, either above or below 
 In order to relate the efficacy of a neural network, it is necessary to have a baseline comparison. For this sake, a simple classifier was created by running a linear regression of average reaction times vs BAC. For a given data sample, there are ~ 20 reaction times, which were averaged across each sample and then used for the regression. From here, a reaction time threshold was selected to classify whether that sample was above or below the limit. This method gives a **precision of 0.55, recall of 0.65, and F1 Score of 0.60.**  
 
 ### Top performance 
-Current top-performance is with a **convolutional neural network** applied to a randomly cropped continuous segment of the touch data - this is repeated multiple times so that for a given sample all data points are used, and then **majority voting** across the repetitions decides whether the sample is predicted as above or below the limit. This gives a **precision of 0.60, recall of 0.74, and F1 Score of 0.67.**
+Current top-performance is with a **convolutional neural network** applied to a randomly cropped continuous segment of the touch data - this is repeated multiple times so that for a given sample all data points are used, and then **majority voting** across the repetitions decides whether the sample is predicted as above or below the limit. Engineered features include cartesian distance between touch point and circle, velocity and acceleration of touch, and reaction times. This gives a **precision of 0.60, recall of 0.74, and F1 Score of 0.67.**
 
 
 

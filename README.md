@@ -4,8 +4,6 @@
 ## SoberSenseApp
 This directory contains the Swift code for an iOS app designed to record a user's touch data during a simple game. It also collects data such as how much alcohol the user has drunk at the time of recording. The game consists of a circle moving semi-randomly across the screen, while the aim is to keep the index finger of the dominant hand on the circle.
 
-**Demo of app:**
-
 https://github.com/ng432/SoberSense/assets/73446355/45c619fc-ed20-47b0-80d2-d2a83e8ee1df
 
 ## Data_analysis 

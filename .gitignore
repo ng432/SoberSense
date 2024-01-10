@@ -5,6 +5,8 @@ runs/
 sweep/
 *.pth
 
+
+
 # Ignoring collected data
 *data/
 *.json
@@ -12,8 +14,9 @@ sweep/
 .DS_Store
 
 # Xcode
-#
-# gitignore contributors: remember to update Global/Xcode.gitignore, Objective-C.gitignore & Swift.gitignore
+
+*.xcodeproj/
+*.xcodeproj
 
 ## User settings
 xcuserdata/

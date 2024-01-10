@@ -6,7 +6,7 @@
 
 import sys
 import os
-from data_transforms_v2 import processing_transform, randomly_flipx, randomly_flipy, append_distance, randomly_crop, convert_time_to_intervals, binary_label_transform, append_RT, append_velocity_and_acceleration
+from data_transforms import processing_transform, randomly_flipx, randomly_flipy, append_distance, randomly_crop, convert_time_to_intervals, binary_label_transform, append_RT, append_velocity_and_acceleration
 import torch as t
 import json
 
@@ -21,7 +21,7 @@ sys.path.insert(0, parent_dir)
 from data_loaders import train_loop, test_loop
 from unpacking_data import SoberSenseDataset
 from evaluation_functions import calc_prec_recall_f1, calc_prf1_majority_vote
-from nn_models_v2 import LSTM_binary_classifier, ConvNN, linear_nn_bc
+from nn_models import LSTM_binary_classifier, ConvNN, linear_nn_bc
 
 device = "cuda" if t.cuda.is_available() else "mps" if t.backends.mps.is_available() else "cpu"
 print(f"Using {device} device")

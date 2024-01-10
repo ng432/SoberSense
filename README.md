@@ -10,13 +10,13 @@ https://github.com/ng432/SoberSense/assets/73446355/45c619fc-ed20-47b0-80d2-d2a8
 
 
 ## Data_analysis 
-This directory contains Python code to model the collected data using neural networks.
+This directory contains Python code to model the collected data using neural networks. In this context, a single data sample refers to the touch data recorded during a single playthrough of the game. 
 
 ### Framing of task
 Currently, the task is framed as a binary classification, either above or below the British drink driving limit (BAC = 0.08), from time-series touch data. The BAC of an individual for a given recorded game is estimated from their weight, sex, how much they have drunk, and how long ago they had their first drink using the Widmark formula, and it is then assessed as to whether it is above or below 0.08 to give a label for a given data sample. 
 
 ### Baseline comparison
-In order to relate the efficacy of a neural network, it is necessary to have a baseline comparison. For this sake, a simple classifier was created by fitting a linear regression to average reaction times derived from a sample derived, and then assessing whether, on average, a sample's reaction times were above or below the reaction time threshold for being above the limit. This gives a **precision of 0.55, recall of 0.65, and F1 Score of 0.60.**
+In order to relate the efficacy of a neural network, it is necessary to have a baseline comparison. For this sake, a simple classifier was created by running a linear regression of average reaction times vs BAC. For a given data sample, there are ~ 20 reaction times, which were averaged across each sample and then used for the regression. From here, a reaction time threshold was selected to classify whether that sample was above or below the limit. This method gives a **precision of 0.55, recall of 0.65, and F1 Score of 0.60.**
 
 ### Top performance 
 Current top-performance is with a **convolutional neural network** applied to a randomly cropped continuous segment of the touch data - this is repeated multiple times so that for a given sample all data points are used, and then **majority voting** across the repetitions decides whether the sample is predicted as above or below the limit. This gives a **precision of 0.60, recall of 0.74, and F1 Score of 0.67.**

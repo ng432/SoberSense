@@ -5,11 +5,13 @@ Swift code for app designed to collect touch data during a task, to infer BAC (b
 On the intial screen, the user enters their data (sex, weight, units drunk, time since first drink).
 This data is used to calculate the BAC, which will be used as the label for recorded touch data, used to train a neural network model.
 
-![IMG_9331](https://github.com/ng432/SoberSense/assets/73446355/faab1ce3-b59b-4bc4-95b7-cb549b24a6d1)
+<img src="https://github.com/ng432/SoberSense/assets/73446355/faab1ce3-b59b-4bc4-95b7-cb549b24a6d1" width="300">
 
 **Animation screen**
 The next screen displays the instructions for the task, where the user has to keep their finger on a circle which moves to (semi) randomly generated coordinates.
 The path of the circle and the touch is recorded, to be used as the data for a neural network. 
+
+<img src="https://github.com/ng432/SoberSense/assets/73446355/88d1572c-c13e-4b3f-b7fe-c37177e461dc" width="300">
 
 ![IMG_9332](https://github.com/ng432/SoberSense/assets/73446355/88d1572c-c13e-4b3f-b7fe-c37177e461dc)
 

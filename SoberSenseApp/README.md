@@ -1,5 +1,5 @@
 
-The folder contains the Swift code for app designed to collect touch data during a task.
+The folder contains the Swift code for an app designed to collect touch data during a task.
 
 
 **1. StartingScreen**: On the intial screen, the user enters their data (sex, weight, units drunk, time since first drink).

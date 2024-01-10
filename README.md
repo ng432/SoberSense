@@ -1,7 +1,7 @@
 # SoberSense
 ... is an application aiming to predict blood alcohol concentration (BAC) from touch data.
 
-**SoberSenseApp** contains the Swift code for an app designed to collect user data, such as weight, sex and alcholic units drunk, and their touch data during a simple game. This data is then used to train the model. The game consists of a circle moving semi-randomly across the screen, while the aim is to keep the index finger of the dominant hand on the circle. See demo below. 
+**SoberSenseApp** contains the Swift code for an app designed to collect user data, such as how much alchohol they have drunk, and their touch data during a simple game. This data is then used to train models. The game consists of a circle moving semi-randomly across the screen, while the aim is to keep the index finger of the dominant hand on the circle. See demo below. 
 
 **Data_analysis** contains Python code to model the collected data using neural networks, with the aim of predicting BAC from the data. 
 

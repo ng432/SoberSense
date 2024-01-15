@@ -2,7 +2,7 @@
 
 import sys
 import os
-from data_transforms import (
+from sobersensetools.sobersensetools.data_transforms import (
     processing_transform,
     randomly_flipx,
     randomly_flipy,
@@ -24,10 +24,10 @@ parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 print(parent_dir)
 sys.path.insert(0, parent_dir)
 
-from data_loaders import train_loop, test_loop
-from unpacking_data import SoberSenseDataset
-from evaluation_functions import calc_prec_recall_f1, calc_prf1_majority_vote
-from nn_models import LSTM_binary_classifier, ConvNN, linear_nn_bc
+from sobersensetools.sobersensetools.loader_loops import train_loop, test_loop
+from sobersensetools.sobersensetools.ssdataset_functions import SoberSenseDataset
+from sobersensetools.sobersensetools.evaluation_functions import calc_prec_recall_f1, calc_prf1_majority_vote
+from sobersensetools.sobersensetools.nn_models import LSTM_binary_classifier, ConvNN, linear_nn_bc
 
 device = (
     "cuda"

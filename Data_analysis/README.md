@@ -6,7 +6,7 @@ Path data refers to the coordinates and timestamp of a circle's path as it (semi
 Touch data refers to the coordianates and timestamp of the users touch data as they try to keep their finger on the circle.
 For a demonstration of this, see root directory. Both touch data and path data for a given sample are inputted into the neural networks.
 
-**'models_and_transforms'** contains models and accomapnying data transforms for a sample data structure of:
+sobersensetools is a custom package, containing a custom dataclass, models and transforms for a sample data structure of:
 
 [num_features, N]
 

@@ -12,7 +12,7 @@ A slice i ([:,i]) of a recording represents the coordinates of touch, the coordi
 
 **N = number of touch points for a recording.**
 
-The position of the circle is interpolated for the given time of each touch point. No zero padding. For more information on how N varies, see pilot_data_exploration. 
+The position of the circle is interpolated for the given time of each touch point. No zero padding. For more information on how N varies, see pilot_data_exploration.ipynb
 
 
 ## pilot_data_exploration.ipynb

@@ -23,6 +23,8 @@ This is a Jupyter notebook containing basic statistical analyses of the data, in
 
 ## running_models.py
 
-This is the script used to train the neural networks found in sobersensetools, minimising the BCE loss in the binary classification of above or below the drink driving limit. TensorBoard is used to track loss changes. 
+This is the script used to train the neural networks found in sobersensetools, minimising the BCE loss in the binary classification of above or below the drink driving limit. TensorBoard is used to track loss changes.
+
+
 
 

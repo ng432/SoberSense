@@ -15,18 +15,12 @@ A slice i ([:,i]) of a recording represents the coordinates of touch, the coordi
 The position of the circle is interpolated for the given time of each touch point. No zero padding. For more information on how N varies, see pilot_data_exploration. 
 
 
-## pilot_data_exploration
+## pilot_data_exploration.ipynb
 
-This is a ju
+This is a Jupyter notebook containing basic statistical analyses of the data, including reaction time analysis and pair plots of engineered features. It also includes the code used to derive 'av_normalising_values.json', containing the values used in touch acceleration and velocity normalisation. 
 
-Code in Python and PyTorch to train NN models on recorded data from the app.
+## running_models.py
 
-A data sample contains (an estimate of) the users BAC, touch data and path data.
-Path data refers to the coordinates and timestamp of a circle's path as it (semi) randomly moves across the screen.
-Touch data refers to the coordianates and timestamp of the users touch data as they try to keep their finger on the circle.
-For a demonstration of this, see root directory. Both touch data and path data for a given sample are inputted into the neural networks.
-
-sobersensetools is a custom package, containing a custom dataclass, models and transforms for a sample data structure of:
-
+This is the script used to train the neural networks found in sobersensetools, using TensorBoard to track loss changes. 
 
 

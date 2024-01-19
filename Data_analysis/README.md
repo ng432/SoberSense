@@ -5,7 +5,7 @@ Sobersensetools is a custom package used to prepare and model data from the Sobe
 
 [num_features, N]
 
-**num_features &ge 5: x_touch, x_path, y_touch, y_path, time...**
+**num_features &ge; 5: x_touch, x_path, y_touch, y_path, time...**
 
 A slice i ([:,i]) of a recording represents the coordinates of touch, the coordinates of the circle and time at a single instance, as well as any additional engineered features. Other features that can be appended include cartesian distance between touch point and circle, velocity and acceleration of touch, and extracted reaction times. 
 

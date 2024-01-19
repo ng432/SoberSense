@@ -3,19 +3,19 @@
 # Code to unpack data recorded from the SoberSense app
 
 import json
-import os
 from torch.utils.data import Dataset
+from pathlib import Path
 
 
 class SoberSenseDataset(Dataset):
     def __init__(
         self,
-        data_folder,
-        label_name="unitsDrunk",
-        device="mps",
-        screenScaling=926,
-        length_threshold=0,
-        maxGameLength=25,
+        data_folder: Path,
+        label_name:str="unitsDrunk",
+        device:str="mps",
+        screenScaling:int=926,
+        length_threshold:int=0,
+        maxGameLength:float=25,
         prep_transform=None,
         augmentation_transform=None,
         label_transform=None,
@@ -43,53 +43,53 @@ class SoberSenseDataset(Dataset):
         self.analysing_data = analysing_data
 
         # Iterate through JSON files in the data folder
-        for filename in os.listdir(data_folder):
-            if filename.endswith(".json"):
-                with open(os.path.join(data_folder, filename), "r") as json_file:
-                    sample_data = json.load(json_file)
 
-                    # poorly recorded data can have limited touch points
-                    # threshold used to ignore samples with too few touch points recorded
-                    if len(sample_data["touchData"]) > length_threshold:
-                        # note using the same scaling for x and y values as to have only one scale for distance
-                        screen_dim = {
-                            "width": sample_data["screenSize"]["width"],
-                            "height": sample_data["screenSize"]["height"],
-                        }
+        for file_path in data_folder.glob('*.json'): 
+            with open(file_path, 'r', encoding='utf-8') as json_file:
+                sample_data = json.load(json_file)
 
-                        # This will output scaled touch data
-                        unpacked_touchData = UnpackTouchData(
-                            sample_data["touchData"],
-                            start_time=sample_data["randomPath"][0]["time"],
-                            screen_dim=screen_dim,
-                            scale=screenScaling,
-                            game_length=maxGameLength,
-                        )
+                # poorly recorded data can have limited touch points
+                # threshold used to ignore samples with too few touch points recorded
+                if len(sample_data["touchData"]) > length_threshold:
+                    # note using the same scaling for x and y values as to have only one scale for distance
+                    screen_dim = {
+                        "width": sample_data["screenSize"]["width"],
+                        "height": sample_data["screenSize"]["height"],
+                    }
 
-                        # Random path data is recorded as scaled, but from -0.5 to 0.5
-                        # Hence, shift = 0.5 to give normalised coordinates from 0 to 1
-                        unpacked_randomPath = UnpackPathData(
-                            sample_data["randomPath"],
-                            scale=screenScaling,
-                            screen_dim=screen_dim,
-                            start_time=sample_data["randomPath"][0]["time"],
-                            shift=0.5,
-                            game_length=maxGameLength,
-                        )
+                    # This will output scaled touch data
+                    unpacked_touchData = UnpackTouchData(
+                        sample_data["touchData"],
+                        start_time=sample_data["randomPath"][0]["time"],
+                        screen_dim=screen_dim,
+                        scale=screenScaling,
+                        game_length=maxGameLength,
+                    )
 
-                        label = sample_data[label_name]
+                    # Random path data is recorded as scaled, but from -0.5 to 0.5
+                    # Hence, shift = 0.5 to give normalised coordinates from 0 to 1
+                    unpacked_randomPath = UnpackPathData(
+                        sample_data["randomPath"],
+                        scale=screenScaling,
+                        screen_dim=screen_dim,
+                        start_time=sample_data["randomPath"][0]["time"],
+                        shift=0.5,
+                        game_length=maxGameLength,
+                    )
 
-                        sample = {
-                            "touchData": unpacked_touchData,
-                            "randomPath": unpacked_randomPath,
-                            "screenHeight": sample_data["screenSize"]["height"],
-                            "controlPoints": sample_data["controlPoints"],
-                            "animationDuration": sample_data["animationDuration"],
-                            "gameLength": maxGameLength,
-                            "id": sample_data["id"],
-                        }
+                    label = sample_data[label_name]
 
-                        self.samples.append((sample, label))
+                    sample = {
+                        "touchData": unpacked_touchData,
+                        "randomPath": unpacked_randomPath,
+                        "screenHeight": sample_data["screenSize"]["height"],
+                        "controlPoints": sample_data["controlPoints"],
+                        "animationDuration": sample_data["animationDuration"],
+                        "gameLength": maxGameLength,
+                        "id": sample_data["id"],
+                    }
+
+                    self.samples.append((sample, label))
 
     def __len__(self):
         return len(self.samples)

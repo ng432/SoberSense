@@ -9,6 +9,8 @@ Sobersensetools is a custom package used to prepare and model data from the Sobe
 
 A slice i ([:,i]) of a recording represents the coordinates of touch, the coordinates of the circle and time at a single instance, as well as any additional engineered features. Other features that can be appended include cartesian distance between touch point and circle, velocity and acceleration of touch, and extracted reaction times. 
 
+The accompanying label is a binary label, extracted from the estimated BAC for a given recording thresholded at the British drink driving limit (0.08). 
+
 
 **N = number of touch points for a recording.**
 
@@ -21,6 +23,6 @@ This is a Jupyter notebook containing basic statistical analyses of the data, in
 
 ## running_models.py
 
-This is the script used to train the neural networks found in sobersensetools, using TensorBoard to track loss changes. 
+This is the script used to train the neural networks found in sobersensetools, minimising the BCE loss in the binary classification of above or below the drink driving limit. TensorBoard is used to track loss changes. 
 
 

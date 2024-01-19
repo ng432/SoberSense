@@ -1,51 +1,50 @@
-# %%
-
+#%%
 import sys
 import os
-from sobersensetools.sobersensetools.data_transforms import (
+from sobersensetools.data_transforms import (
     processing_transform,
     randomly_flipx,
     randomly_flipy,
     append_distance,
     randomly_crop,
-    convert_time_to_intervals,
     binary_label_transform,
     append_RT,
     append_velocity_and_acceleration,
 )
 import torch as t
-import json
 
 from torch import nn
 from torch.utils.data import DataLoader, random_split
 from torch.utils.tensorboard import SummaryWriter
+from pathlib import Path
+from sobersensetools.loader_loops import train_loop, test_loop
+from sobersensetools.ssdataset_functions import SoberSenseDataset
+from sobersensetools.evaluation_functions import calc_prec_recall_f1, calc_prf1_majority_vote
+from sobersensetools.nn_models import LSTM_binary_classifier, ConvNN, linear_nn_bc
+from sobersensetools.data_loaders import load_av_normalising_values
 
-parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-print(parent_dir)
-sys.path.insert(0, parent_dir)
 
-from sobersensetools.sobersensetools.loader_loops import train_loop, test_loop
-from sobersensetools.sobersensetools.ssdataset_functions import SoberSenseDataset
-from sobersensetools.sobersensetools.evaluation_functions import calc_prec_recall_f1, calc_prf1_majority_vote
-from sobersensetools.sobersensetools.nn_models import LSTM_binary_classifier, ConvNN, linear_nn_bc
+if not t.backends.mps.is_available():
+    if not t.backends.mps.is_built():
+        print("MPS not available because the current PyTorch install was not "
+              "built with MPS enabled.")
+    else:
+        print("MPS not available because the current MacOS version is not 12.3+ "
+              "and/or you do not have an MPS-enabled device on this machine.")
+    device = "cpu"
+else:
+    device = t.device("mps")
 
-device = (
-    "cuda"
-    if t.cuda.is_available()
-    else "mps"
-    if t.backends.mps.is_available()
-    else "cpu"
-)
-print(f"Using {device} device")
 
-with open("av_normalising_values.json", "r") as file:
-    av_normalising_values = json.load(file)
+print(f"Using {device} device.")
+
+av_normalising_values = load_av_normalising_values()
+folder_with_data = 'pilot_data'
 
 
 # %%
 
 crop_size = 400
-
 
 # prep transform is cached
 def prep_transform(unprocessed_data):
@@ -58,13 +57,12 @@ def prep_transform(unprocessed_data):
 
 def augmentation_transform(x):
     x = randomly_crop(x, crop_size=crop_size)
-    # x = convert_time_to_intervals(x) # ideally would be in prep transform, but has to be after cropping
     x = randomly_flipx(x)
     x = randomly_flipy(x)
     return x
 
 
-data_path = os.path.join(parent_dir, "pilot_data")
+data_path = Path(__file__).resolve().parent / folder_with_data 
 
 data_set = SoberSenseDataset(
     data_path,

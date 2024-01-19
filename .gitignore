@@ -7,8 +7,9 @@ sweep/
 
 
 
-# Ignoring collected data
-*data/
+# Ignoring collected data, except for sample data
+**/*data/
+!**/sample_data/
 
 .DS_Store
 

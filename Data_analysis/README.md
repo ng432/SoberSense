@@ -17,7 +17,7 @@ The accompanying label is a binary label, extracted from the estimated BAC for a
 The position of the circle is interpolated for the given time of each touch point. No zero padding. For more information on how N varies, see pilot_data_exploration.ipynb
 
 
-## pilot_data_exploration.ipynb
+## data_exploration.ipynb
 
 This is a Jupyter notebook containing basic statistical analyses of the data, including reaction time analysis and pair plots of engineered features. It also includes the code used to derive 'av_normalising_values.json', containing the values used in touch acceleration and velocity normalisation. 
 

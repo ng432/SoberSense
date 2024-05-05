@@ -13,7 +13,7 @@ This directory contains Python code to model the collected data using neural net
 For the sake of privacy and security, user touch data has not been shared. However, there is example sample data available. 
 
 ### Framing of task
-Currently, the task is framed as a binary classification, either above or below the British drink driving limit (BAC = 0.08), from time-series touch data. The BAC of an individual for a given recorded game is estimated from their weight, sex, how much they have drunk, and how long ago they had their first drink using the Widmark formula, and it is then assessed as to whether it is above or below 0.08 to give a label for a given data sample.  
+The task is framed as a binary classification, either above or below the British drink driving limit (BAC = 0.08), from time-series touch data. The BAC of an individual for a given recorded game is estimated from their weight, sex, how much they have drunk, and how long ago they had their first drink using the Widmark formula, and it is then assessed as to whether it is above or below 0.08 to give a label for a given data sample.  
 
 ### Baseline comparison
 In order to relate the efficacy of a neural network, it is necessary to have a baseline comparison. For this sake, a simple classifier was created by running a linear regression of average reaction times vs BAC. For a given data sample, there are ~ 20 reaction times, which were averaged across each sample and then used for the regression. From here, a reaction time threshold was selected to classify whether that sample was above or below the limit. This method gives a **precision of 0.55, recall of 0.65, and F1 Score of 0.60.**  
